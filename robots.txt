@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://samgfour.github.io/rahisibook/sitemap.xml
