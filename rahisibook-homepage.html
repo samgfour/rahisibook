@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RahisiBook — Booking, but rahisi.</title>
+<meta name="description" content="The easy booking system for salons and spas in Kenya. M-Pesa payments, WhatsApp reminders, and zero double-bookings.">
+<meta name="theme-color" content="#27500A">
+<meta property="og:title" content="RahisiBook — Booking, but rahisi.">
+<meta property="og:description" content="M-Pesa payments, WhatsApp reminders, and zero double-bookings — built for how Kenyan salons and spas actually work.">
+<meta property="og:type" content="website">
+<!-- Add an og:image once one exists — social previews look bare without one -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Icons: Tabler Icons webfont via CDN. Self-host for production if you'd rather not depend on jsdelivr. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<style>
+  :root {
+    --bg: #FCF8EF;
+    --bg-panel: #FAEEDA;
+    --ink: #1E2A16;
+    --ink-muted: #5C6152;
+    --green: #27500A;
+    --green-dark: #1B3907;
+    --marigold: #EF9F27;
+    --marigold-light: #FAC775;
+    --marigold-dark: #BA7517;
+    --white: #FFFFFF;
+    --border: rgba(30, 42, 22, 0.12);
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 24px;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --max-width: 1120px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.15; margin: 0; }
+  p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(252, 248, 239, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 1.125rem; color: var(--green);
+    text-decoration: none;
+  }
+  .logo svg { width: 32px; height: 32px; }
+
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a { text-decoration: none; color: var(--ink-muted); font-size: 0.9375rem; transition: color 0.15s ease; }
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-actions { display: flex; align-items: center; gap: 20px; }
+  .nav-login { text-decoration: none; font-size: 0.9375rem; color: var(--ink-muted); }
+
+  .menu-toggle { display: none; background: none; border: none; padding: 8px; font-size: 1.5rem; color: var(--ink); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0 22px; height: 46px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9375rem; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--green); color: var(--white); }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-secondary { background: transparent; color: var(--ink); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--ink); }
+  .btn-block { width: 100%; }
+
+  /* Hero */
+  .hero { padding: 72px 0 96px; }
+  .hero .wrap { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg-panel); color: var(--green);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 0.875rem; margin-bottom: 24px;
+  }
+  .hero h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); max-width: 14ch; margin-bottom: 20px; }
+  .hero-sub { font-size: 1.125rem; color: var(--ink-muted); max-width: 46ch; margin-bottom: 32px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 36px; }
+
+  .trust-row { display: flex; flex-wrap: wrap; gap: 24px; }
+  .trust-row span { display: flex; align-items: center; gap: 8px; font-size: 0.9375rem; color: var(--ink-muted); }
+  .trust-row i { color: var(--green); font-size: 1.125rem; }
+
+  /* Hero visual: a flat marigold shape offset behind a preview card of the app in use */
+  .hero-visual { position: relative; display: flex; justify-content: center; }
+  .hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: 24px -16px -16px 24px;
+    background: var(--marigold);
+    border-radius: var(--radius-lg);
+    z-index: 0;
+  }
+  .preview-card {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 340px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .preview-header {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.875rem; color: var(--ink-muted);
+    padding-bottom: 16px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .preview-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  .preview-appt {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px; background: var(--bg);
+    border-radius: var(--radius-sm); margin-bottom: 16px;
+  }
+  .preview-time { font-weight: 600; font-size: 0.9375rem; }
+  .preview-details { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .preview-details strong { font-size: 0.9375rem; font-weight: 500; }
+  .preview-details span { font-size: 0.8125rem; color: var(--ink-muted); }
+  .preview-appt > i { color: var(--green); font-size: 1.25rem; }
+  .preview-chip { display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 8px; }
+  .preview-chip:last-child { margin-bottom: 0; }
+  .preview-chip-whatsapp { background: var(--bg-panel); color: var(--green); }
+  .preview-chip-mpesa { background: var(--bg); color: var(--ink); border: 1px solid var(--border); }
+
+  /* Features */
+  .features { padding: 96px 0; border-top: 1px solid var(--border); }
+  .section-head { max-width: 46ch; margin-bottom: 56px; }
+  .section-head h2 { font-size: clamp(1.75rem, 3vw, 2.25rem); margin-bottom: 12px; }
+  .section-head p { color: var(--ink-muted); font-size: 1.0625rem; }
+
+  .feature-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .feature { background: var(--white); padding: 32px; }
+  .feature i { font-size: 1.5rem; color: var(--green); margin-bottom: 16px; }
+  .feature h3 { font-size: 1.125rem; font-weight: 500; margin-bottom: 8px; font-family: var(--font-body); }
+  .feature p { color: var(--ink-muted); font-size: 0.9375rem; }
+
+  /* Testimonial */
+  .testimonial { padding: 96px 0; }
+  .testimonial .wrap { max-width: 720px; }
+  .testimonial-panel { background: var(--bg-panel); border-radius: var(--radius-lg); padding: 48px; }
+  .testimonial-panel .stars { color: var(--marigold-dark); margin-bottom: 20px; display: flex; gap: 4px; }
+  .testimonial-panel blockquote { font-family: var(--font-display); font-size: 1.375rem; line-height: 1.5; margin: 0 0 20px; }
+  .testimonial-panel cite { font-style: normal; color: var(--ink-muted); font-size: 0.9375rem; }
+
+  /* CTA banner */
+  .cta-banner { background: var(--green); color: var(--white); padding: 72px 0; text-align: center; }
+  .cta-banner h2 { color: var(--white); font-size: clamp(1.75rem, 3vw, 2.25rem); margin-bottom: 12px; }
+  .cta-banner p { color: rgba(255, 255, 255, 0.8); margin-bottom: 28px; }
+  .cta-banner .btn-primary { background: var(--marigold); color: var(--green-dark); }
+  .cta-banner .btn-primary:hover { background: var(--marigold-light); }
+
+  /* Footer */
+  .site-footer { padding: 56px 0 32px; border-top: 1px solid var(--border); }
+  .footer-top { display: flex; flex-direction: column; gap: 40px; margin-bottom: 40px; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 48px; }
+  .footer-col h4 { font-size: 0.875rem; margin-bottom: 12px; font-weight: 500; }
+  .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a { text-decoration: none; color: var(--ink-muted); font-size: 0.9375rem; }
+  .footer-col a:hover { color: var(--ink); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+    padding-top: 24px; border-top: 1px solid var(--border);
+    font-size: 0.8125rem; color: var(--ink-muted);
+  }
+
+  @media (min-width: 720px) {
+    .hero-actions { flex-wrap: nowrap; }
+    .btn-block { width: auto; }
+    .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 960px) {
+    .hero .wrap { grid-template-columns: 1.1fr 0.9fr; }
+    .feature-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (max-width: 959px) {
+    .nav-links {
+      display: none;
+      position: absolute; top: 72px; left: 0; right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column; align-items: flex-start;
+      padding: 24px; gap: 20px;
+    }
+    .nav-links.open { display: flex; }
+    .menu-toggle { display: block; }
+    .nav-login { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="40" height="40" rx="10" fill="#EF9F27"/>
+        <path d="M12 20.5 L17.5 26 L28 14" stroke="#27500A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      RahisiBook
+    </a>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="#login" class="nav-login">Log in</a>
+      <a href="#signup" class="btn btn-primary">Start free trial</a>
+    </div>
+
+    <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+      <i class="ti ti-menu-2" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">
+          <i class="ti ti-map-pin" aria-hidden="true"></i>
+          Made for Kenyan salons and spas
+        </span>
+        <h1>Booking, but rahisi.</h1>
+        <p class="hero-sub">M-Pesa payments, WhatsApp reminders, and zero double-bookings — built for how Kenyan salons and spas actually work.</p>
+        <div class="hero-actions">
+          <a href="#signup" class="btn btn-primary btn-block">
+            Start free trial <i class="ti ti-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="#how-it-works" class="btn btn-secondary btn-block">See how it works</a>
+        </div>
+        <div class="trust-row">
+          <span><i class="ti ti-cash" aria-hidden="true"></i>M-Pesa ready</span>
+          <span><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>WhatsApp reminders</span>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="preview-card">
+          <div class="preview-header">
+            <span>Tue, 14 Oct</span>
+            <span class="preview-dot" aria-hidden="true"></span>
+          </div>
+          <div class="preview-appt">
+            <div class="preview-time">10:00</div>
+            <div class="preview-details">
+              <strong>Braids, Amina</strong>
+              <span>Confirmed</span>
+            </div>
+            <i class="ti ti-check" aria-hidden="true"></i>
+          </div>
+          <div class="preview-chip preview-chip-whatsapp">
+            <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+            Reminder sent
+          </div>
+          <div class="preview-chip preview-chip-mpesa">
+            <i class="ti ti-cash" aria-hidden="true"></i>
+            KES 1,500 paid
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Everything a busy chair needs</h2>
+        <p>No modules to configure, no features you'll never touch — just the parts that keep clients booked and paid.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <i class="ti ti-calendar-check" aria-hidden="true"></i>
+          <h3>Never double-book</h3>
+          <p>One calendar for every chair and stylist, synced in real time.</p>
+        </div>
+        <div class="feature">
+          <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+          <h3>Automatic reminders</h3>
+          <p>WhatsApp nudges sent on schedule, cutting no-shows before they happen.</p>
+        </div>
+        <div class="feature">
+          <i class="ti ti-cash" aria-hidden="true"></i>
+          <h3>Get paid instantly</h3>
+          <p>M-Pesa payments land straight in your till, matched to the booking.</p>
+        </div>
+        <div class="feature">
+          <i class="ti ti-chart-bar" aria-hidden="true"></i>
+          <h3>See your numbers</h3>
+          <p>Daily takings, staff performance, and repeat clients, in one view.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <!-- Placeholder quote — replace with a real customer testimonial before launch -->
+  <section class="testimonial">
+    <div class="wrap">
+      <div class="testimonial-panel">
+        <div class="stars">
+          <span class="sr-only">5 out of 5 stars</span>
+          <i class="ti ti-star" aria-hidden="true"></i>
+          <i class="ti ti-star" aria-hidden="true"></i>
+          <i class="ti ti-star" aria-hidden="true"></i>
+          <i class="ti ti-star" aria-hidden="true"></i>
+          <i class="ti ti-star" aria-hidden="true"></i>
+        </div>
+        <blockquote>"Before RahisiBook I was losing clients to forgotten appointments. Now my chairs stay full all week."</blockquote>
+        <cite>Grace M., salon owner, Kilimani</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-banner" id="signup">
+    <div class="wrap">
+      <h2>Ready to fill your chair?</h2>
+      <p>No credit card needed to start.</p>
+      <a href="#" class="btn btn-primary">Start free trial</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="#" class="logo">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="40" height="40" rx="10" fill="#EF9F27"/>
+          <path d="M12 20.5 L17.5 26 L28 14" stroke="#27500A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        RahisiBook
+      </a>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#privacy">Privacy</a></li>
+            <li><a href="#terms">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 RahisiBook. All rights reserved.</span>
+      <span>Nairobi, Kenya</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const navLinks = document.getElementById('nav-links');
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    menuToggle.querySelector('i').className = isOpen ? 'ti ti-x' : 'ti ti-menu-2';
+  });
+</script>
+
+</body>
+</html>
