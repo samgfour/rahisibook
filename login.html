@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sign in — RahisiBook</title>
+  <meta name="description" content="Sign in to your RahisiBook salon workspace.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+</head>
+<body class="auth-page">
+  <main class="auth-layout">
+    <section class="auth-brand">
+      <a class="logo" href="index.html"><span class="logo-mark">✓</span>RahisiBook</a>
+      <div>
+        <span class="eyebrow"><i class="ti ti-lock"></i> Secure workspace access</span>
+        <h1>Your salon, beautifully organised.</h1>
+        <p>Manage appointments, staff, payments and client reminders from one simple workspace.</p>
+      </div>
+      <a class="whatsapp-link" href="https://wa.me/254700000000?text=Hello%20RahisiBook%2C%20I%20need%20help%20signing%20in." target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i> Need help? Chat with us</a>
+    </section>
+    <section class="auth-card" aria-labelledby="auth-title">
+      <div class="auth-tabs" role="tablist" aria-label="Account access">
+        <button class="auth-tab active" type="button" role="tab" aria-selected="true" data-mode="login">Sign in</button>
+        <button class="auth-tab" type="button" role="tab" aria-selected="false" data-mode="signup">Create account</button>
+      </div>
+      <h2 id="auth-title">Welcome back</h2>
+      <p class="auth-intro" id="auth-intro">Sign in to continue to your salon dashboard.</p>
+      <form id="auth-form" novalidate>
+        <div class="auth-signup-only" hidden><label for="business">Salon name</label><input id="business" name="business" autocomplete="organization"></div>
+        <label for="email">Email address</label><input id="email" name="email" type="email" required autocomplete="email">
+        <label for="password">Password</label><input id="password" name="password" type="password" required minlength="8" autocomplete="current-password"><small class="password-help">Use at least 8 characters.</small>
+        <label class="remember"><input type="checkbox" name="remember" checked> Remember this device</label>
+        <button class="btn btn-primary btn-block" type="submit" id="auth-submit">Sign in <i class="ti ti-arrow-right"></i></button>
+        <p class="form-status" id="auth-status" role="status" aria-live="polite"></p>
+      </form>
+      <p class="auth-disclaimer">Demo only: authentication is stored locally in this browser. Connect a real identity provider before launch.</p>
+      <a href="index.html" class="back-link"><i class="ti ti-arrow-left"></i> Back to RahisiBook</a>
+    </section>
+  </main>
+  <script src="auth.js" defer></script>
+</body>
+</html>
