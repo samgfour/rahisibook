@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#27500A">
+<title>RahisiBook demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#27500a;--ink:#1e2a16;--mut:#5c6152;--bg:#fcf8ef;--card:#fff;--line:rgba(30,42,22,.14);--panel:#faeeda;--gold:#ef9f27}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--card);padding:8px}
+header{background:#fcf8efee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0}
+.w{max-width:720px;margin:0 auto;padding:0 16px}
+header .w{display:flex;justify-content:space-between;align-items:center;min-height:56px}
+.logo{font-weight:600;color:var(--brand);text-decoration:none;display:flex;align-items:center}
+nav{display:flex;gap:4px}
+nav button{background:none;border:0;color:var(--mut);font:inherit;font-weight:600;padding:10px 12px;border-radius:8px;min-height:44px;cursor:pointer}
+nav button[aria-current=true]{background:var(--brand);color:var(--bg)}
+main{padding:20px 0 40px}
+h1,h2{font-family:Fraunces,Georgia,serif;line-height:1.15}h1{font-size:1.8rem;margin:0 0 6px}.lm{display:inline-grid;place-items:center;width:30px;height:30px;background:var(--gold);border-radius:10px;margin-right:8px;font-size:1.2rem}.sub{color:var(--mut);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+label{display:block;font-weight:600;margin:12px 0 4px;font-size:.9rem}
+input,select{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-height:48px}
+.btn{font:inherit;font-weight:700;background:var(--brand);color:#fff;border:0;border-radius:8px;padding:12px 18px;min-height:48px;cursor:pointer;width:100%;margin-top:16px;text-decoration:none;display:block;text-align:center}
+.btn.sm{width:auto;margin:0;min-height:40px;padding:8px 12px;font-size:.85rem}
+.btn.o{background:none;color:var(--brand);border:1.5px solid var(--brand)}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.b{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.pending{background:#fef3c7;color:#92400e}.confirmed{background:#d1fae5;color:#065f46}.done{background:#e0e7ff;color:#3730a3}.cancelled{background:#fee2e2;color:#991b1b}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stats .card{text-align:center;margin:0}.stats b{font-size:1.4rem;display:block}.stats span{font-size:.8rem;color:var(--mut)}
+.empty{color:var(--mut);text-align:center;padding:20px}
+.note{font-size:.8rem;color:var(--mut)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="w"><a class="logo" href="/"><span class="lm">✓</span>RahisiBook</a>
+<nav aria-label="Sections"><button data-v="book">Book</button><button data-v="status">My bookings</button><button data-v="dash">Dashboard</button></nav></div></header>
+<main id="main" class="w">
+
+<section id="book">
+<p class="note" style="background:var(--panel);border-radius:8px;padding:10px 14px;color:var(--brand)">This is a demo with sample services. Your own page will carry your spa's name, services and prices.</p><h1 id="h1">Book an appointment</h1><p class="sub">Pick a service, day and time. The spa will confirm your booking.</p>
+<div class="card">
+<label for="bs">Service</label><select id="bs"></select>
+<label for="bd">Day</label><input id="bd" type="date">
+<label for="bt">Time</label><select id="bt"></select>
+<label for="bn">Your name</label><input id="bn" autocomplete="name">
+<label for="bp">Phone</label><input id="bp" type="tel" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX">
+<button class="btn" id="bgo">Request booking</button>
+<p class="note">No payment is taken.</p>
+</div>
+<div id="bdone" class="card" hidden></div>
+</section>
+
+<section id="status" hidden>
+<h1>My bookings</h1><p class="sub">Enter the phone number you booked with.</p>
+<div class="card"><label for="sp">Phone</label><input id="sp" type="tel" inputmode="tel" placeholder="07XX XXX XXX">
+<button class="btn" id="sgo">Check status</button></div>
+<div id="slist"></div>
+</section>
+
+<section id="dash" hidden>
+<h1>Dashboard</h1><p class="sub">Today's bookings and clients.</p>
+<div class="stats"><div class="card"><b id="s1">0</b><span>Pending</span></div><div class="card"><b id="s2">0</b><span>Confirmed</span></div><div class="card"><b id="s3">0</b><span>Done</span></div></div>
+<div id="dlist"></div>
+<h2 style="font-size:1.3rem;margin:20px 0 8px">Add client booking</h2>
+<div class="card">
+<label for="an">Client name</label><input id="an">
+<label for="ap">Phone</label><input id="ap" type="tel" inputmode="tel">
+<label for="as">Service</label><select id="as"></select>
+<label for="ad">Day</label><input id="ad" type="date">
+<label for="at">Time</label><select id="at"></select>
+<button class="btn" id="ago">Add booking</button>
+</div>
+<p class="note">Demo only. Your real dashboard is private to you and your team.</p>
+</section>
+</main>
+
+<script>
+var cfg={name:"Demo Spa",wa:"254797405682",sv:[["Full body massage",2500],["Facial",2000],["Manicure",800],["Pedicure",1000]]};
+var SV=cfg.sv;
+var TM=["09:00","10:00","11:00","12:00","14:00","15:00","16:00"];
+var db=[];
+try{db=JSON.parse(localStorage.getItem("rbdemo")||"[]")}catch(e){}
+function save(){try{localStorage.setItem("rbdemo",JSON.stringify(db))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function norm(p){p=String(p).replace(/\D/g,"");return p.slice(-9)}
+function fill(sel,arr,f){$(sel).innerHTML=arr.map(function(x,i){return"<option value=\""+i+"\">"+esc(f?f(x):x)+"</option>"}).join("")}
+function refresh(){["bs","as"].forEach(function(x){fill(x,SV,function(y){return y[0]+" – KES "+y[1]})});$("h1").textContent="Book at "+cfg.name}
+["bt","at"].forEach(function(s){fill(s,TM)});
+var t=new Date().toISOString().slice(0,10);["bd","ad"].forEach(function(i){$(i).value=t;$(i).min=t});
+function card(b,dash){
+ var h="<div class=\"card\"><div class=\"row\"><div><b>"+esc(b.sn)+"</b><br>"+esc(b.d)+" · "+TM[b.t]+"<br><span class=\"note\">"+esc(b.n)+" · "+esc(b.p)+"</span></div><span class=\"b "+b.st+"\">"+b.st[0].toUpperCase()+b.st.slice(1)+"</span></div>";
+ if(dash){h+="<div class=\"acts\">";
+  if(b.st=="pending")h+="<button class=\"btn sm\" data-i=\""+b.id+"\" data-a=\"confirmed\">Confirm</button>";
+  if(b.st=="confirmed")h+="<button class=\"btn sm\" data-i=\""+b.id+"\" data-a=\"done\">Mark done</button>";
+  if(b.st=="pending"||b.st=="confirmed")h+="<button class=\"btn sm o\" data-i=\""+b.id+"\" data-a=\"cancelled\">Cancel</button>";
+  h+="<a class=\"btn sm o\" href=\"https://wa.me/254"+norm(b.p)+"?text="+encodeURIComponent("Hi "+b.n+", your "+b.sn+" booking on "+b.d+" at "+TM[b.t]+" is "+b.st+".")+"\">WhatsApp</a></div>"}
+ return h+"</div>"}
+function add(n,p,s,d,t,st){db.push({id:Date.now()+Math.random(),n:n,p:p,s:+s,sn:SV[s]?SV[s][0]:"Service",d:d,t:+t,st:st});save()}
+function render(){
+ var a=db.slice().sort(function(x,y){return(x.d+TM[x.t])<(y.d+TM[y.t])?-1:1});
+ $("dlist").innerHTML=a.length?a.map(function(b){return card(b,1)}).join(""):"<div class=\"empty\">No bookings yet.</div>";
+ ["pending","confirmed","done"].forEach(function(k,i){$("s"+(i+1)).textContent=db.filter(function(b){return b.st==k}).length})}
+$("bgo").onclick=function(){
+ var n=$("bn").value.trim(),p=$("bp").value.trim();
+ if(!n||norm(p).length<9){alert("Please enter your name and a valid phone number.");return}
+ add(n,p,$("bs").value,$("bd").value,$("bt").value,"pending");render();
+ var m="Hi, I'd like to book "+SV[$("bs").value][0]+" on "+$("bd").value+" at "+TM[$("bt").value]+". Name: "+n;
+ $("bdone").hidden=false;
+ $("bdone").innerHTML="<b>Request received ✓</b><p>Status: Pending. The spa will confirm your booking.</p>"+(norm(cfg.wa).length==9?"<a class=\"btn\" href=\"https://wa.me/254"+norm(cfg.wa)+"?text="+encodeURIComponent(m)+"\">Message "+esc(cfg.name)+" on WhatsApp</a>":"");
+ $("bn").value="";$("bp").value=""};
+$("sgo").onclick=function(){
+ var k=norm($("sp").value),r=db.filter(function(b){return norm(b.p)==k});
+ $("slist").innerHTML=k.length<9?"<div class=\"empty\">Enter a valid phone number.</div>":r.length?r.map(function(b){return card(b,0)}).join(""):"<div class=\"empty\">No bookings found for this number.</div>"};
+$("ago").onclick=function(){
+ var n=$("an").value.trim(),p=$("ap").value.trim();
+ if(!n||norm(p).length<9){alert("Enter the client's name and phone.");return}
+ add(n,p,$("as").value,$("ad").value,$("at").value,"confirmed");render();$("an").value="";$("ap").value=""};
+$("dlist").onclick=function(e){var i=e.target.getAttribute("data-i");if(!i)return;
+ db.forEach(function(b){if(String(b.id)==i)b.st=e.target.getAttribute("data-a")});save();render()};
+function show(v){["book","status","dash"].forEach(function(s){$(s).hidden=s!=v});
+ document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-current",b.dataset.v==v)});location.hash=v}
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){show(b.dataset.v)}});
+show(["book","status","dash"].indexOf(location.hash.slice(1))>-1?location.hash.slice(1):"book");render();refresh();
+</script>
+</body>
+</html>
