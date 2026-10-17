@@ -6,78 +6,24 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#27500a">
 <title>RahisiBook demo</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#fcf8ef;--card:#ffffff;--line:rgba(30,42,22,.14);--ink:#1e2a16;--mut:#5c6152;--lilac:#27500a;--gold:#ef9f27;--green:#1a7f4b;--amber:#b26a00;--dk:#ffffff;--panel:#faeeda}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
-.w{max-width:560px;margin:0 auto;padding:0 16px}
-button,input,select,textarea{font:inherit;color:inherit}
-.demo{background:var(--panel);border-bottom:1px solid var(--line);font-size:.8rem;color:var(--mut)}
-.demo .w{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px}
-.seg{display:flex;background:var(--card);border-radius:10px;padding:3px}
-.seg button{border:0;background:none;padding:8px 14px;border-radius:8px;font-weight:600;font-size:.85rem;color:var(--mut);min-height:40px;cursor:pointer}
-.seg button[aria-pressed=true]{background:var(--lilac);color:var(--dk)}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:18px 0 8px}
-.brand{font-family:Fraunces,Georgia,serif;font-size:1.3rem;font-weight:600}.brand i{color:var(--gold);font-style:normal}.lm{display:inline-grid;place-items:center;width:26px;height:26px;background:var(--gold);border-radius:8px;margin-right:8px;color:var(--lilac);font-weight:700}
-small,.mut{color:var(--mut);font-size:.82rem}
-.pill{background:var(--lilac);color:var(--dk);border:0;border-radius:99px;padding:10px 16px;font-weight:700;text-decoration:none;font-size:.9rem;min-height:44px;cursor:pointer;white-space:nowrap}
-h1,h2{font-family:Fraunces,Georgia,serif}h1{font-size:1.9rem;line-height:1.15;margin:14px 0 6px}h2{font-size:1.2rem;margin:24px 0 10px}
-.tabs{display:flex;gap:8px;margin:16px 0}
-.tabs button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px;font-weight:600;color:var(--mut);min-height:48px;cursor:pointer}
-.tabs button.on{background:var(--lilac);color:var(--dk);border-color:var(--lilac)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px}
-.svc{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;min-height:56px}
-.svc span{color:var(--mut);font-size:.85rem;white-space:nowrap}
-.svc.on,.chip.on{border-color:var(--lilac);background:rgba(39,80,10,.1)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer;font-weight:500}
-.chip:disabled{opacity:.35;cursor:not-allowed;text-decoration:line-through}
-label{display:block;font-weight:600;font-size:.9rem;margin:12px 0 4px}
-input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;min-height:48px}
-.cta{width:100%;margin-top:14px;background:var(--lilac);color:var(--dk);border:0;border-radius:12px;padding:14px;font-weight:700;min-height:52px;cursor:pointer}
-.sum{background:var(--panel);color:var(--lilac);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:.9rem}
-.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.t{font-weight:700;text-align:right}
-.st{display:inline-block;font-size:.72rem;font-weight:600;border-radius:99px;padding:2px 10px;border:1px solid;margin-top:4px}
-.st.pending{color:var(--amber)}.st.confirmed{color:var(--lilac)}.st.chair{color:var(--amber);background:rgba(239,159,39,.18)}.st.done{color:var(--green)}.st.noshow,.st.cancelled{color:#b4233a}
-.tag{display:inline-block;font-size:.72rem;background:var(--panel);color:var(--lilac);padding:2px 8px;border-radius:99px;margin:6px 6px 0 0}
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.b{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:.88rem;font-weight:500;min-height:42px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
-.b.p{background:var(--lilac);color:var(--dk);border-color:var(--lilac);font-weight:700}
-.b.g{color:var(--green);border-color:var(--green)}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.stats .card{margin:0}.stats b{display:block;font-size:1.7rem;line-height:1.2}.stats span{font-size:.82rem;color:var(--mut)}
-.stats .hi{background:var(--lilac);color:var(--dk)}.stats .hi span{color:#dfe9d3}
-.chart{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:110px;padding:10px 4px 0}
-.chart div{flex:1;text-align:center;font-size:.72rem;color:var(--mut);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
-.chart i{display:block;width:100%;max-width:42px;background:var(--gold);border-radius:6px 6px 0 0;margin:2px 0 6px}
-.chart .now i{background:var(--lilac)}.chart em{font-style:normal;color:var(--ink);font-size:.75rem}
-.nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:9}
-.nav button{flex:1;border:0;background:none;color:var(--mut);padding:16px 4px;font-weight:600;font-size:.82rem;min-height:56px;cursor:pointer}
-.nav button.on{color:var(--lilac)}
-.rs{border-top:1px dashed var(--line);margin-top:12px;padding-top:6px}
-.rs h3{font-size:.9rem;margin:10px 0 6px}
-.srow{display:grid;grid-template-columns:1fr 64px 90px;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
-.srow input{min-height:42px;padding:8px}
-.foot{text-align:center;color:var(--mut);font-size:.78rem;padding:26px 0 90px}
-.foot a{color:var(--lilac)}
-[hidden]{display:none!important}
-</style>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="demo/style.css">
 </head>
 <body>
-<div class="demo"><div class="w"><span style="display:flex;align-items:center;font-weight:600;color:var(--lilac)"><span class="lm">✓</span>RahisiBook demo</span><div class="seg" role="group" aria-label="View as"><button data-r="client">Client</button><button data-r="owner">Spa owner</button></div></div></div>
+<div class="demo"><div class="w"><span style="display:flex;align-items:center;font-weight:600;color:var(--lilac)"><span class="lm">✓</span>RahisiBook demo</span>
+<div class="seg" role="group" aria-label="View as"><button data-r="client">Client</button><button data-r="owner">Spa owner</button></div></div></div>
+<div class="w"><p class="hint" id="hint" style="margin-top:12px"></p></div>
 
-<div id="client" class="w">
-<div class="top"><div><div class="brand"><i>♛</i> Demo Spa &amp; Salon</div><small>Where beauty comes first · Nairobi</small></div><a class="pill" href="tel:+254797405682">Call</a></div>
-<h1>Pick your style. Pick your time.</h1>
+<div id="cv">
+<div class="w">
+<div class="top"><div><div class="brand"><i>♛</i> <span id="nm"></span></div><small id="tg"></small></div><a class="pill" id="call" href="#">Call</a></div>
+<h1>Pick your service. Pick your time.</h1>
 <p class="mut" style="margin:0">Book online. No back-and-forth messages.</p>
 <div class="tabs"><button id="tb" data-cv="book">Book a visit</button><button id="tm" data-cv="mine">My bookings</button></div>
 
 <section id="cb">
 <h2 style="margin-top:6px">1. Choose a service</h2><div id="svcs"></div>
-<h2>2. Choose a day</h2><div class="chips" id="days"></div><small>Closed Sundays.</small>
+<h2>2. Choose a day</h2><div class="chips" id="days"></div><small id="closed"></small>
 <h2>3. Choose a time</h2><div class="chips" id="times"></div>
 <h2>4. Your details</h2>
 <label for="cn">Full name</label><input id="cn" autocomplete="name">
@@ -86,7 +32,7 @@ input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--lin
 <div class="sum" id="sum"></div>
 <button class="cta" id="cgo">Confirm booking</button>
 <div class="card" id="cdone" hidden style="margin-top:12px"></div>
-<p class="mut" style="font-size:.8rem">You get a reminder before your visit, and you can change the time or cancel in My bookings. No payment is taken.</p>
+<p class="mut" style="font-size:.8rem">You can change the time or cancel in My bookings. No payment is taken.</p>
 </section>
 
 <section id="cm" hidden>
@@ -94,150 +40,144 @@ input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--lin
 <p class="mut" style="margin-top:0">Enter the phone number you booked with to see your status and history.</p>
 <label for="mp">Phone number</label><input id="mp" type="tel" inputmode="tel" placeholder="07XX XXX XXX">
 <button class="cta" id="mgo">Show my bookings</button>
-<p class="mut">Demo number with history: 0712 345 678</p>
-<div id="mine"></div>
+<div id="mine" style="margin-top:12px"></div>
 </section>
+
+</div>
 </div>
 
-<div id="owner" class="w" hidden>
-<div class="top"><div><div class="brand"><i>♛</i> Demo Spa &amp; Salon</div><small id="odate"></small></div><button class="pill" id="wgo">Add walk-in</button></div>
-
+<div id="ow" hidden>
+<div class="w">
+<div class="top"><div><div class="brand"><i>♛</i> <span class="nm"></span></div><small id="odate"></small></div><button class="pill" id="wgo">Add walk-in</button></div>
 <div class="card" id="wf" hidden>
 <h2 style="margin-top:0">New booking</h2>
 <label for="wn">Name</label><input id="wn"><label for="wp">Phone</label><input id="wp" type="tel" inputmode="tel">
 <label for="ws">Service</label><select id="ws"></select><label for="wd">Day</label><select id="wd"></select><label for="wt">Time</label><select id="wt"></select>
-<div class="acts"><button class="b p" id="wsv">Save booking</button><button class="b" id="wcl">Close</button></div>
-</div>
+<div class="acts"><button class="b p" id="wsv">Save booking</button><button class="b" id="wcl">Close</button></div></div>
 
 <section id="ov">
 <div class="stats"><div class="card hi"><b id="k1"></b><span>Appointments today</span></div><div class="card"><b id="k2"></b><span>Waiting for you to confirm</span></div><div class="card"><b id="k3"></b><span>Earned today</span></div><div class="card"><b id="k4"></b><span>Booked, next 7 days</span></div></div>
 <h2>Next 7 days</h2><div class="card"><div class="chart" id="chart"></div></div>
-<h2>Remind tomorrow's clients</h2><div id="rem"></div>
+<h2 id="remh">Remind your next clients</h2><div id="rem"></div>
 <h2>Today</h2><div id="today"></div>
 </section>
 <section id="ob" hidden><h2>All bookings</h2><div id="all"></div></section>
-<section id="os" hidden><h2>Services and prices</h2><p class="mut" style="margin-top:0">Changes here update the public booking page. Set a price to 0 to hide a service.</p><div class="card" id="sv"></div></section>
+</div>
+<nav class="nav" id="nav"><button data-ov="ov">Overview</button><button data-ov="ob">Bookings</button><button id="site">Website</button></nav>
 </div>
 
-<p class="foot" id="foot">Demo with sample services and clients, saved in this browser. <a href="#" id="reset">Reset demo</a> · <a href="/">Back to RahisiBook</a></p>
-<nav class="nav" id="nav" hidden><button data-ov="ov">Overview</button><button data-ov="ob">Bookings</button><button data-ov="os">Services</button><button data-r="client">Website</button></nav>
+<p class="foot" style="padding-bottom:90px">Demo with sample services and clients, saved in this browser. <a href="#" id="reset">Reset demo</a> · <a href="/">Back to RahisiBook</a></p>
 
-<script>
-const S=[["Knotless box braids",5,3500],["Box braids",4,2500],["Facial",1,2000],["Massage (60 min)",1,2500],["Manicure",1,800]];
-const TM=["09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00"];
-const NAME="Demo Spa & Salon",WA="254797405682",KEY="rbdemo3";
-const LIVE=["pending","confirmed","chair"],OFF=["cancelled","noshow"];
-const LBL={pending:"Waiting",confirmed:"Confirmed",chair:"In the chair",done:"Done",noshow:"No-show",cancelled:"Cancelled"};
-let db=[],role="client",cv="book",ov="ov",sel={s:-1,d:"",t:""},rs=null,sph="";
-const $=i=>document.getElementById(i);
-const esc=s=>{const d=document.createElement("div");d.textContent=s;return d.innerHTML};
-const norm=p=>String(p).replace(/\D/g,"").slice(-9);
-const iso=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
-const nice=d=>new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
-const ft=t=>{const p=t.split(":"),h=+p[0];return(h>12?h-12:h)+":"+p[1]+(h>=12?" pm":" am")};
-const money=n=>"KES "+n.toLocaleString("en-US");
-const opts=(a,f)=>a.map((x,i)=>`<option value="${i}">${esc(f?f(x,i):x)}</option>`).join("");
-const wa=(p,m)=>"https://wa.me/254"+norm(p)+"?text="+encodeURIComponent(m);
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}};
-function add(n,p,s,d,t,st,note){db.push({id:String(Date.now()+Math.random()),n,p,sn:S[s][0],pr:S[s][2],d,t,st,rs:0,rm:0,note:note||""})}
-function seed(){db=[];
- add("Amina W.","0712 345 678",2,iso(0),"09:00","done");add("Grace K.","0722 000 111",3,iso(0),"12:00","chair");
- add("Mary N.","0733 000 222",0,iso(0),"14:00","confirmed");add("Faith M.","0744 000 333",4,iso(0),"16:00","pending");
- add("Joy A.","0755 000 444",1,iso(1),"10:00","confirmed");add("Rose T.","0766 000 555",3,iso(1),"15:00","confirmed");
- add("Amina W.","0712 345 678",4,iso(2),"11:00","confirmed");add("Amina W.","0712 345 678",4,iso(-7),"10:00","done");save()}
-let raw=null;try{raw=localStorage.getItem(KEY)}catch(e){}
-if(raw){try{db=JSON.parse(raw)}catch(e){seed()}}else seed();
-
-const openDays=()=>{const a=[];for(let i=0;i<8;i++){const d=iso(i);if(new Date(d+"T00:00").getDay()!==0)a.push(d)}return a};
-const taken=(d,t,x)=>db.some(b=>b.d==d&&b.t==t&&LIVE.includes(b.st)&&b.id!=x);
-const chDay=(cur,a)=>openDays().map(d=>`<button class="chip ${d==cur?"on":""}" data-a="${a}" data-v="${d}">${nice(d)}</button>`).join("");
-const chTime=(d,cur,a,x)=>TM.map(t=>`<button class="chip ${t==cur?"on":""}" data-a="${a}" data-v="${t}" ${taken(d,t,x)?"disabled":""}>${ft(t)}</button>`).join("");
-
-function bcard(b,m){
- const o=m=="o",live=LIVE.includes(b.st),when=nice(b.d)+" · "+ft(b.t),id=` data-i="${b.id}"`;
- let h=`<div class="card"><div class="row"><div><b>${esc(o?b.n:b.sn)}</b><br><span class="mut">${o?esc(b.sn)+" · "+money(b.pr):when+" · "+money(b.pr)}</span>${o&&b.d!=iso(0)?`<br><span class="mut">${nice(b.d)}</span>`:""}</div><div><div class="t">${o?ft(b.t):""}</div><span class="st ${b.st}">${LBL[b.st]}</span></div></div>`;
- if(b.rs)h+='<span class="tag">Rescheduled</span>';if(b.rm)h+='<span class="tag">Reminder sent ✓</span>';
- h+='<div class="acts">';
- if(o){
-  if(b.st=="pending")h+=`<button class="b p" data-a="confirmed"${id}>Confirm</button>`;
-  if(b.st=="confirmed")h+=`<button class="b p" data-a="chair"${id}>Start</button><a class="b" data-a="remind"${id} target="_blank" rel="noopener" href="${wa(b.p,`Hi ${b.n}, a reminder of your ${b.sn} appointment on ${nice(b.d)} at ${ft(b.t)} at ${NAME}. Reply here if you need to change it.`)}">Send reminder</a>`;
-  if(b.st=="chair")h+=`<button class="b p" data-a="done"${id}>Mark done</button>`;
-  h+=`<a class="b" href="tel:+254${norm(b.p)}">Call</a><a class="b g" target="_blank" rel="noopener" href="${wa(b.p,`Hi ${b.n}, your ${b.sn} booking on ${when} is ${LBL[b.st].toLowerCase()}.`)}">WhatsApp</a>`;
- }
- if(live&&b.st!="chair")h+=`<button class="b" data-a="resch"${id}>Reschedule</button>`;
- if(o&&b.st=="confirmed")h+=`<button class="b" data-a="noshow"${id}>No-show</button>`;
- if(live&&b.st!="chair")h+=`<button class="b" data-a="cancelled"${id}>Cancel</button>`;
- h+='</div>';
- if(rs&&rs.id==b.id)h+=`<div class="rs"><h3>New day</h3><div class="chips">${chDay(rs.d,"rday")}</div><h3>New time</h3><div class="chips">${chTime(rs.d,rs.t,"rtime",b.id)}</div><div class="acts"><button class="b p" data-a="rsave"${id}>Save new time</button><button class="b" data-a="rclose">Close</button></div></div>`;
- return h+'</div>'}
-const srt=a=>a.slice().sort((x,y)=>(x.d+x.t)<(y.d+y.t)?-1:1);
-
+<script src="demo/config.js"></script>
+<script src="demo/rahisibook.js"></script>
+<script>(function(){
+var R=RB,C=R.C,$=R.$,A=R.API;
+var cv="book",sel={s:-1,d:"",t:""},rs=null,sph="",mine=[],tk=[];
+var SV=C.services.filter(function(x){return x.price>0});
+function taken(d,t){return tk.some(function(x){return x.day==d&&x.time==t})}
+async function loadTaken(){try{tk=await A.taken(R.iso(0),R.iso(9))||[]}catch(e){tk=[]}}
+async function loadMine(){mine=R.norm(sph).length>=9?(await A.mine(sph)||[]):[]}
+$("nm").textContent=C.name;$("tg").textContent=C.tagline+" · "+C.city;$("call").href="tel:"+C.phone;
+var DN=["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
+$("closed").textContent=C.closedDays.length?"Closed "+C.closedDays.map(function(d){return DN[d]}).join(" and ")+".":"";
 function draw(){
- const o=role=="owner";
- $("client").hidden=o;$("owner").hidden=!o;$("nav").hidden=!o;
- document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r==role));
  $("cb").hidden=cv!="book";$("cm").hidden=cv!="mine";$("tb").className=cv=="book"?"on":"";$("tm").className=cv=="mine"?"on":"";
- ["ov","ob","os"].forEach(s=>$(s).hidden=s!=ov);
- document.querySelectorAll("#nav [data-ov]").forEach(b=>b.className=b.dataset.ov==ov?"on":"");
- $("svcs").innerHTML=S.map((x,i)=>x[2]>0?`<button class="svc ${sel.s===i?"on":""}" data-a="psvc" data-v="${i}"><b>${esc(x[0])}</b><span>${x[1]} hr · ${money(x[2])}</span></button>`:"").join("");
- $("days").innerHTML=chDay(sel.d,"pday");
- $("times").innerHTML=sel.s<0||!sel.d?'<p class="mut" style="margin:0">Pick a service and day to see open times.</p>':chTime(sel.d,sel.t,"ptime","");
- $("sum").textContent=sel.s>=0&&sel.d&&sel.t?`${S[sel.s][0]} · ${nice(sel.d)} at ${ft(sel.t)} · ${money(S[sel.s][2])}`:"Your booking summary appears here.";
- const k=norm(sph),mine=srt(db.filter(b=>norm(b.p)==k));
- $("mine").innerHTML=!sph?"":k.length<9?'<p class="mut">Enter a valid phone number.</p>':mine.length?mine.map(b=>bcard(b,"c")).join(""):'<p class="mut">No bookings found for this number.</p>';
- const today=iso(0),tb=srt(db.filter(b=>b.d==today&&!OFF.includes(b.st))),days=[0,1,2,3,4,5,6].map(i=>iso(i));
- $("odate").textContent=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})+" · Demo with sample data";
- $("k1").textContent=tb.length;$("k2").textContent=db.filter(b=>b.st=="pending").length;
- $("k3").textContent=money(db.filter(b=>b.d==today&&b.st=="done").reduce((s,b)=>s+b.pr,0));
- $("k4").textContent=money(db.filter(b=>days.includes(b.d)&&!OFF.includes(b.st)).reduce((s,b)=>s+b.pr,0));
- $("chart").innerHTML=days.map((d,i)=>{const n=db.filter(b=>b.d==d&&!OFF.includes(b.st)).length;return`<div class="${i?"":"now"}"><em>${n}</em><i style="height:${n?14+n*14:3}px"></i>${new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short"})}</div>`}).join("");
- const due=srt(db.filter(b=>b.d==iso(1)&&b.st=="confirmed"&&!b.rm));
- $("rem").innerHTML=due.length?due.map(b=>bcard(b,"o")).join(""):'<div class="card mut">No reminders due. Tomorrow\'s confirmed clients appear here.</div>';
- $("today").innerHTML=tb.length?tb.map(b=>bcard(b,"o")).join(""):'<div class="card mut">No appointments today.</div>';
- $("all").innerHTML=srt(db).map(b=>bcard(b,"o")).join("");
- $("sv").innerHTML=S.map((x,i)=>`<div class="srow" ${i?"":'style="border-top:0"'}><span>${esc(x[0])}</span><span class="mut">${x[1]} hr</span><input type="number" min="0" inputmode="numeric" value="${x[2]}" data-sp="${i}" aria-label="Price for ${esc(x[0])}"></div>`).join("");
- $("ws").innerHTML=opts(S.map((x,i)=>i).filter(i=>S[i][2]>0),i=>S[i][0]+" – "+money(S[i][2]));
- $("wd").innerHTML=opts([0,1,2,3,4,5,6],i=>nice(iso(i)));$("wt").innerHTML=opts(TM,ft)}
-
-document.addEventListener("click",e=>{
- const t=e.target.closest("[data-a],[data-r],[data-cv],[data-ov]");if(!t)return;
- const d=t.dataset;
- if(d.r){role=d.r;rs=null;draw();window.scrollTo(0,0);return}
+ $("svcs").innerHTML=SV.map(function(x,i){return'<button class="svc '+(sel.s===i?"on":"")+'" data-a="psvc" data-v="'+i+'"><b>'+R.esc(x.name)+'</b><span>'+x.hours+' hr · '+R.money(x.price)+'</span></button>'}).join("");
+ $("days").innerHTML=R.chDay(sel.d,"pday");
+ $("times").innerHTML=!sel.d?'<p class="mut" style="margin:0">Pick a day to see open times.</p>':R.chTime(sel.d,sel.t,"ptime",taken,"");
+ $("sum").textContent=sel.s>=0&&sel.d&&sel.t?SV[sel.s].name+" · "+R.nice(sel.d)+" at "+R.ft(sel.t)+" · "+R.money(SV[sel.s].price):"Your booking summary appears here.";
+ var ctx={rs:rs,taken:taken};
+ $("mine").innerHTML=!sph?"":R.norm(sph).length<9?'<p class="mut">Enter a valid phone number.</p>':mine.length?mine.map(function(b){return R.card(b,"c",ctx)}).join(""):'<p class="mut">No bookings found for this number.</p>'}
+async function run(f){try{await f()}catch(e){alert(e.message)}}
+$("cv").addEventListener("click",function(e){
+ var t=e.target.closest("[data-a],[data-cv]");if(!t)return;var d=t.dataset;
  if(d.cv){cv=d.cv;rs=null;draw();return}
- if(d.ov){ov=d.ov;rs=null;draw();window.scrollTo(0,0);return}
- const a=d.a,b=db.find(x=>x.id==d.i);
- if(a=="psvc"){sel.s=+d.v}
+ var a=d.a,b=mine.filter(function(x){return x.id==d.i})[0];
+ if(a=="psvc")sel.s=+d.v;
  else if(a=="pday"){sel.d=d.v;sel.t=""}
- else if(a=="ptime"){sel.t=d.v}
- else if(a=="resch"){rs={id:b.id,d:b.d,t:b.t}}
+ else if(a=="ptime")sel.t=d.v;
+ else if(a=="resch")rs={id:b.id,d:b.day,t:b.time};
  else if(a=="rday"){rs.d=d.v;rs.t=""}
- else if(a=="rtime"){rs.t=d.v}
- else if(a=="rclose"){rs=null}
- else if(a=="rsave"){if(!rs.t){alert("Please pick a new time.");return}b.d=rs.d;b.t=rs.t;b.rs=1;b.rm=0;if(role=="client")b.st="pending";rs=null;save()}
- else if(a=="remind"){b.rm=1;save();setTimeout(draw,400);return}
- else if(b){b.st=a;rs=null;save()}
+ else if(a=="rtime")rs.t=d.v;
+ else if(a=="rclose")rs=null;
+ else if(a=="rsave"){if(!rs.t){alert("Please pick a new time.");return}run(async function(){await A.change(b.id,sph,"reschedule",rs.d,rs.t);rs=null;await loadMine();await loadTaken();draw()});return}
+ else if(a=="cancelled"){if(!confirm("Cancel this booking?"))return;run(async function(){await A.change(b.id,sph,"cancel");await loadMine();await loadTaken();draw()});return}
  draw()});
-document.addEventListener("change",e=>{const i=e.target.dataset.sp;if(i===undefined)return;S[+i][2]=Math.max(0,+e.target.value||0);draw()});
-
-$("cgo").onclick=()=>{
- const n=$("cn").value.trim(),p=$("cp").value.trim();
+$("cgo").onclick=function(){run(async function(){
+ var n=$("cn").value.trim(),p=$("cp").value.trim();
  if(sel.s<0||!sel.d||!sel.t){alert("Please choose a service, day and time.");return}
- if(!n||norm(p).length<9){alert("Please enter your name and a valid phone number.");return}
- add(n,p,sel.s,sel.d,sel.t,"pending",$("cx").value.trim());save();
- const m=`Hi, I just requested ${S[sel.s][0]} on ${nice(sel.d)} at ${ft(sel.t)}. Name: ${n}`;
+ if(!n||R.norm(p).length<9){alert("Please enter your name and a valid phone number.");return}
+ var s=SV[sel.s];
+ await A.create({name:n,phone:p,service:s.name,price:s.price,day:sel.d,time:sel.t,note:$("cx").value.trim()});
+ var m="Hi, I just requested "+s.name+" on "+R.nice(sel.d)+" at "+R.ft(sel.t)+". Name: "+n;
  $("cdone").hidden=false;
- $("cdone").innerHTML=`<b>Request received ✓</b><p class="mut">Status: Waiting. ${esc(NAME)} will confirm your booking. Tap Spa owner at the top to see how it arrives.</p><div class="acts"><a class="b g" target="_blank" rel="noopener" href="${wa(WA,m)}">Message the spa on WhatsApp</a><button class="b" data-cv="mine">My bookings</button></div>`;
- sph=p;$("mp").value=p;sel={s:-1,d:"",t:""};$("cn").value="";$("cp").value="";$("cx").value="";draw()};
-$("mgo").onclick=()=>{sph=$("mp").value;draw()};
-$("wgo").onclick=()=>{$("wf").hidden=!$("wf").hidden};
-$("wcl").onclick=()=>{$("wf").hidden=true};
-$("wsv").onclick=()=>{
- const n=$("wn").value.trim(),p=$("wp").value.trim(),vis=S.map((x,i)=>i).filter(i=>S[i][2]>0);
- if(!n||norm(p).length<9){alert("Enter the client's name and phone.");return}
- add(n,p,vis[+$("ws").value],iso(+$("wd").value),TM[+$("wt").value],"confirmed");save();
- $("wn").value="";$("wp").value="";$("wf").hidden=true;draw()};
-$("reset").onclick=e=>{e.preventDefault();seed();sph="";rs=null;sel={s:-1,d:"",t:""};$("cdone").hidden=true;draw()};
-draw();
+ $("cdone").innerHTML='<b>Request received ✓</b><p class="mut">Status: Waiting. '+R.esc(C.name)+' will confirm your booking.</p><div class="acts"><a class="b g" target="_blank" rel="noopener" href="'+R.wa(C.whatsapp,m)+'">Message us on WhatsApp</a><button class="b" data-cv="mine">My bookings</button></div>';
+ sph=p;$("mp").value=p;sel={s:-1,d:"",t:""};$("cn").value="";$("cp").value="";$("cx").value="";
+ await loadMine();await loadTaken();draw()})};
+$("mgo").onclick=function(){run(async function(){sph=$("mp").value;await loadMine();draw()})};
+window.clientInit=async function(){await loadTaken();await loadMine();draw()};
+})();</script>
+<script>(function(){
+var R=RB,C=R.C,$=R.$,A=R.API;
+var list=[],ov="ov",rs=null;
+var SV=C.services.filter(function(x){return x.price>0});
+document.querySelectorAll(".nm").forEach(function(n){n.textContent=C.name});
+function taken(d,t,x){return list.some(function(b){return b.day==d&&b.time==t&&R.ACTIVE.indexOf(b.status)>-1&&b.id!=x})}
+async function load(){list=await A.list()||[];draw()}
+async function run(f){try{await f()}catch(e){alert(e.message)}}
+function draw(){
+ ["ov","ob"].forEach(function(s){$(s).hidden=s!=ov});
+ document.querySelectorAll("#nav [data-ov]").forEach(function(b){b.className=b.dataset.ov==ov?"on":""});
+ var today=R.iso(0),days=[0,1,2,3,4,5,6].map(function(i){return R.iso(i)}),live=function(b){return R.OFF.indexOf(b.status)<0};
+ var tb=R.srt(list.filter(function(b){return b.day==today&&live(b)})),ctx={rs:rs,taken:taken};
+ $("odate").textContent=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+ $("k1").textContent=tb.length;$("k2").textContent=list.filter(function(b){return b.status=="pending"}).length;
+ $("k3").textContent=R.money(list.filter(function(b){return b.day==today&&b.status=="done"}).reduce(function(s,b){return s+b.price},0));
+ $("k4").textContent=R.money(list.filter(function(b){return days.indexOf(b.day)>-1&&live(b)}).reduce(function(s,b){return s+b.price},0));
+ $("chart").innerHTML=days.map(function(d,i){var n=list.filter(function(b){return b.day==d&&live(b)}).length;return'<div class="'+(i?"":"now")+'"><em>'+n+'</em><i style="height:'+(n?14+n*14:3)+'px"></i>'+new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short"})+'</div>'}).join("");
+ var nd=R.openDays().filter(function(d){return d>today})[0];if(nd)$("remh").textContent="Remind clients for "+R.nice(nd);
+ var due=R.srt(list.filter(function(b){return b.day==nd&&b.status=="confirmed"&&!b.reminded}));
+ $("rem").innerHTML=due.length?due.map(function(b){return R.card(b,"o",ctx)}).join(""):'<div class="card mut">No reminders due. Confirmed clients for your next open day appear here.</div>';
+ $("today").innerHTML=tb.length?tb.map(function(b){return R.card(b,"o",ctx)}).join(""):'<div class="card mut">No appointments today.</div>';
+ $("all").innerHTML=R.srt(list).map(function(b){return R.card(b,"o",ctx)}).join("");
+ $("ws").innerHTML=SV.map(function(x,i){return'<option value="'+i+'">'+R.esc(x.name)+' – '+R.money(x.price)+'</option>'}).join("");
+ $("wd").innerHTML=[0,1,2,3,4,5,6].map(function(i){return'<option value="'+R.iso(i)+'">'+R.nice(R.iso(i))+'</option>'}).join("");
+ $("wt").innerHTML=C.openTimes.map(function(t){return'<option value="'+t+'">'+R.ft(t)+'</option>'}).join("")}
+$("ow").addEventListener("click",function(e){
+ var t=e.target.closest("[data-a],[data-ov]");if(!t)return;var d=t.dataset;
+ if(d.ov){ov=d.ov;rs=null;draw();window.scrollTo(0,0);return}
+ var a=d.a,b=list.filter(function(x){return x.id==d.i})[0];
+ if(a=="resch")rs={id:b.id,d:b.day,t:b.time};
+ else if(a=="rday"){rs.d=d.v;rs.t=""}
+ else if(a=="rtime")rs.t=d.v;
+ else if(a=="rclose")rs=null;
+ else if(a=="rsave"){if(!rs.t){alert("Please pick a new time.");return}run(async function(){await A.update(b.id,{day:rs.d,time:rs.t,rescheduled:true,reminded:false});rs=null;await load()});return}
+ else if(a=="remind"){run(async function(){await A.update(b.id,{reminded:true});await load()});return}
+ else if(b){run(async function(){await A.update(b.id,{status:a});rs=null;await load()});return}
+ draw()});
+$("wgo").onclick=function(){$("wf").hidden=!$("wf").hidden};
+$("wcl").onclick=function(){$("wf").hidden=true};
+$("wsv").onclick=function(){run(async function(){
+ var n=$("wn").value.trim(),p=$("wp").value.trim(),s=SV[+$("ws").value];
+ if(!n||R.norm(p).length<9){alert("Enter the client's name and phone.");return}
+ var day=$("wd").value,time=$("wt").value;
+ if(taken(day,time)){alert("That time is already booked. Pick another.");return}
+ await A.add({name:n,phone:p,service:s.name,price:s.price,day:day,time:time,status:"confirmed",note:""});
+ $("wn").value="";$("wp").value="";$("wf").hidden=true;await load()})};
+$("site").onclick=function(){window.setRole("client")};
+window.ownerInit=function(){run(load)};
+})();</script>
+<script>
+(function(){
+ var $=RB.$,role="client";
+ window.setRole=function(r){role=r;$("cv").hidden=r!="client";$("ow").hidden=r!="owner";
+  document.querySelectorAll(".seg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.r==r)});
+  $("hint").textContent=r=="client"?"You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.":"You are seeing what the spa owner sees. Confirm, remind and reschedule from here.";
+  if(r=="client")window.clientInit();else window.ownerInit();window.scrollTo(0,0)};
+ document.querySelector(".seg").addEventListener("click",function(e){var b=e.target.closest("[data-r]");if(b)window.setRole(b.dataset.r)});
+ $("reset").onclick=function(e){e.preventDefault();try{localStorage.removeItem("rb_demo_"+RB.C.name)}catch(x){}location.reload()};
+ window.setRole("client");
+})();
 </script>
 </body>
 </html>
