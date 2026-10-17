@@ -13,7 +13,6 @@
 <div class="demo"><div class="w"><span style="display:flex;align-items:center;font-weight:600;color:var(--lilac)"><span class="lm">✓</span>RahisiBook demo</span>
 <div class="seg" role="group" aria-label="View as"><button data-r="client">Client</button><button data-r="owner">Spa owner</button></div></div></div>
 <div class="w"><p class="hint" id="hint" style="margin-top:12px"></p></div>
-
 <div id="cv">
 <div class="w">
 <div class="top"><div><div class="brand"><i>♛</i> <span id="nm"></span></div><small id="tg"></small></div><a class="pill" id="call" href="#">Call</a></div>
@@ -45,7 +44,6 @@
 
 </div>
 </div>
-
 <div id="ow" hidden>
 <div class="w">
 <div class="top"><div><div class="brand"><i>♛</i> <span class="nm"></span></div><small id="odate"></small></div><button class="pill" id="wgo">Add walk-in</button></div>
@@ -62,19 +60,20 @@
 <h2>Today</h2><div id="today"></div>
 </section>
 <section id="ob" hidden><h2>All bookings</h2><div id="all"></div></section>
+<section id="os" hidden><h2>Services and prices</h2><p class="mut" style="margin-top:0">Changes here update your booking page. Set a price to 0 to hide a service.</p><div class="card" id="sv"></div>
+<h2>Add a service</h2><div class="card"><label for="xn">Service name</label><input id="xn"><label for="xh">Hours it takes</label><input id="xh" type="number" min="0.5" max="12" step="0.5" inputmode="decimal" placeholder="1"><label for="xp">Price</label><input id="xp" type="number" min="0" inputmode="numeric"><button class="cta" id="xsv">Add service</button></div></section>
 </div>
-<nav class="nav" id="nav"><button data-ov="ov">Overview</button><button data-ov="ob">Bookings</button><button id="site">Website</button></nav>
+<nav class="nav" id="nav"><button data-ov="ov">Overview</button><button data-ov="ob">Bookings</button><button data-ov="os">Services</button><button id="site">Website</button></nav>
 </div>
-
 <p class="foot" style="padding-bottom:90px">Demo with sample services and clients, saved in this browser. <a href="#" id="reset">Reset demo</a> · <a href="/">Back to RahisiBook</a></p>
-
 <script src="demo/config.js"></script>
 <script src="demo/rahisibook.js"></script>
 <script>(function(){
 var R=RB,C=R.C,$=R.$,A=R.API;
 var cv="book",sel={s:-1,d:"",t:""},rs=null,sph="",mine=[],tk=[];
-var SV=C.services.filter(function(x){return x.price>0});
+var SV=[];
 function taken(d,t){return tk.some(function(x){return x.day==d&&x.time==t})}
+async function loadSv(){SV=(await A.services()||[]).filter(function(x){return x.price>0});if(sel.s>=SV.length)sel.s=-1}
 async function loadTaken(){try{tk=await A.taken(R.iso(0),R.iso(9))||[]}catch(e){tk=[]}}
 async function loadMine(){mine=R.norm(sph).length>=9?(await A.mine(sph)||[]):[]}
 $("nm").textContent=C.name;$("tg").textContent=C.tagline+" · "+C.city;$("call").href="tel:"+C.phone;
@@ -115,18 +114,18 @@ $("cgo").onclick=function(){run(async function(){
  sph=p;$("mp").value=p;sel={s:-1,d:"",t:""};$("cn").value="";$("cp").value="";$("cx").value="";
  await loadMine();await loadTaken();draw()})};
 $("mgo").onclick=function(){run(async function(){sph=$("mp").value;await loadMine();draw()})};
-window.clientInit=async function(){await loadTaken();await loadMine();draw()};
+window.clientInit=async function(){await loadSv();await loadTaken();await loadMine();draw()};
 })();</script>
 <script>(function(){
 var R=RB,C=R.C,$=R.$,A=R.API;
 var list=[],ov="ov",rs=null;
-var SV=C.services.filter(function(x){return x.price>0});
+var SV=[],ALLSV=[];
 document.querySelectorAll(".nm").forEach(function(n){n.textContent=C.name});
 function taken(d,t,x){return list.some(function(b){return b.day==d&&b.time==t&&R.ACTIVE.indexOf(b.status)>-1&&b.id!=x})}
-async function load(){list=await A.list()||[];draw()}
+async function load(){list=await A.list()||[];ALLSV=await A.services()||[];SV=ALLSV.filter(function(x){return x.price>0});draw()}
 async function run(f){try{await f()}catch(e){alert(e.message)}}
 function draw(){
- ["ov","ob"].forEach(function(s){$(s).hidden=s!=ov});
+ ["ov","ob","os"].forEach(function(s){$(s).hidden=s!=ov});
  document.querySelectorAll("#nav [data-ov]").forEach(function(b){b.className=b.dataset.ov==ov?"on":""});
  var today=R.iso(0),days=[0,1,2,3,4,5,6].map(function(i){return R.iso(i)}),live=function(b){return R.OFF.indexOf(b.status)<0};
  var tb=R.srt(list.filter(function(b){return b.day==today&&live(b)})),ctx={rs:rs,taken:taken};
@@ -140,6 +139,7 @@ function draw(){
  $("rem").innerHTML=due.length?due.map(function(b){return R.card(b,"o",ctx)}).join(""):'<div class="card mut">No reminders due. Confirmed clients for your next open day appear here.</div>';
  $("today").innerHTML=tb.length?tb.map(function(b){return R.card(b,"o",ctx)}).join(""):'<div class="card mut">No appointments today.</div>';
  $("all").innerHTML=R.srt(list).map(function(b){return R.card(b,"o",ctx)}).join("");
+ $("sv").innerHTML=ALLSV.map(function(x,i){return'<div class="srow" '+(i?"":'style="border-top:0"')+'><span>'+R.esc(x.name)+(x.price>0?"":' <small>(hidden)</small>')+'</span><span class="mut">'+x.hours+' hr</span><input type="number" min="0" inputmode="numeric" value="'+x.price+'" data-sp="'+x.id+'" aria-label="Price for '+R.esc(x.name)+'"><button class="b" data-a="svdel" data-i="'+x.id+'">Remove</button></div>'}).join("");
  $("ws").innerHTML=SV.map(function(x,i){return'<option value="'+i+'">'+R.esc(x.name)+' – '+R.money(x.price)+'</option>'}).join("");
  $("wd").innerHTML=[0,1,2,3,4,5,6].map(function(i){return'<option value="'+R.iso(i)+'">'+R.nice(R.iso(i))+'</option>'}).join("");
  $("wt").innerHTML=C.openTimes.map(function(t){return'<option value="'+t+'">'+R.ft(t)+'</option>'}).join("")}
@@ -152,9 +152,15 @@ $("ow").addEventListener("click",function(e){
  else if(a=="rtime")rs.t=d.v;
  else if(a=="rclose")rs=null;
  else if(a=="rsave"){if(!rs.t){alert("Please pick a new time.");return}run(async function(){await A.update(b.id,{day:rs.d,time:rs.t,rescheduled:true,reminded:false});rs=null;await load()});return}
+ else if(a=="svdel"){if(!confirm("Remove this service? Past bookings keep their details."))return;run(async function(){await A.removeService(d.i);await load()});return}
  else if(a=="remind"){run(async function(){await A.update(b.id,{reminded:true});await load()});return}
  else if(b){run(async function(){await A.update(b.id,{status:a});rs=null;await load()});return}
  draw()});
+$("ow").addEventListener("change",function(e){var id=e.target.dataset.sp;if(id===undefined)return;run(async function(){await A.setPrice(id,Math.max(0,Math.round(+e.target.value||0)));await load()})});
+$("xsv").onclick=function(){run(async function(){var n=$("xn").value.trim(),h=+$("xh").value||1,pv=$("xp").value,p=Math.round(+pv);
+ if(!n||pv===""||!(p>=0)){alert("Enter a service name and a price.");return}
+ if(!(h>0&&h<=12)){alert("Hours must be between 0.5 and 12.");return}
+ await A.addService({name:n,hours:h,price:p,position:ALLSV.length});$("xn").value="";$("xh").value="";$("xp").value="";await load()})};
 $("wgo").onclick=function(){$("wf").hidden=!$("wf").hidden};
 $("wcl").onclick=function(){$("wf").hidden=true};
 $("wsv").onclick=function(){run(async function(){
@@ -169,13 +175,13 @@ window.ownerInit=function(){run(load)};
 })();</script>
 <script>
 (function(){
- var $=RB.$,role="client";
- window.setRole=function(r){role=r;$("cv").hidden=r!="client";$("ow").hidden=r!="owner";
+ var $=RB.$;
+ window.setRole=function(r){$("cv").hidden=r!="client";$("ow").hidden=r!="owner";
   document.querySelectorAll(".seg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.r==r)});
-  $("hint").textContent=r=="client"?"You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.":"You are seeing what the spa owner sees. Confirm, remind and reschedule from here.";
+  $("hint").textContent=r=="client"?"You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.":"You are seeing what the spa owner sees. Confirm, remind, reschedule and manage services from here.";
   if(r=="client")window.clientInit();else window.ownerInit();window.scrollTo(0,0)};
  document.querySelector(".seg").addEventListener("click",function(e){var b=e.target.closest("[data-r]");if(b)window.setRole(b.dataset.r)});
- $("reset").onclick=function(e){e.preventDefault();try{localStorage.removeItem("rb_demo_"+RB.C.name)}catch(x){}location.reload()};
+ $("reset").onclick=function(e){e.preventDefault();try{localStorage.removeItem("rb_demo_"+RB.C.name);localStorage.removeItem("rb_svc_"+RB.C.name)}catch(x){}location.reload()};
  window.setRole("client");
 })();
 </script>

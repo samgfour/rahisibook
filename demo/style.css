@@ -49,7 +49,7 @@ input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--lin
 .nav button.on{color:var(--lilac)}
 .rs{border-top:1px dashed var(--line);margin-top:12px;padding-top:6px}
 .rs h3{font-size:.9rem;margin:10px 0 6px}
-.srow{display:grid;grid-template-columns:1fr 64px 90px;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.srow .b{padding:8px 10px;font-size:.8rem;min-height:40px}.srow{display:grid;grid-template-columns:1fr 40px 84px auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
 .srow input{min-height:42px;padding:8px}
 .foot{text-align:center;color:var(--mut);font-size:.78rem;padding:26px 0 90px}
 .foot a{color:var(--lilac)}
