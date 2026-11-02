@@ -55,3 +55,34 @@ input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--lin
 .foot a{color:var(--lilac)}
 [hidden]{display:none!important}
 .login{max-width:420px;margin:48px auto}.err{color:#b4233a;font-size:.88rem;min-height:1.2em;margin:8px 0 0}.banner{background:var(--panel);color:var(--lilac);font-size:.8rem;text-align:center;padding:8px 12px}
+
+/* ---- Owner dashboard: left menu ---- */
+#shell{--sw:240px}
+.side{position:fixed;top:var(--top,0);bottom:0;left:0;width:var(--sw);background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;padding:14px 12px;z-index:30;overflow-y:auto;transition:transform .2s ease}
+.side .brand{padding:6px 10px 16px;font-size:1.15rem}
+.side .gap{flex:1;min-height:12px}
+.nl{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:10px 12px;border-radius:10px;font-weight:600;font-size:.95rem;color:var(--mut);min-height:46px;cursor:pointer;text-align:left;text-decoration:none}
+.nl svg{width:20px;height:20px;flex:none}
+.nl:hover{background:rgba(30,42,22,.05)}
+.nl.on{background:rgba(39,80,10,.1);color:var(--lilac)}
+.nl .n{margin-left:auto;min-width:22px;text-align:center;background:var(--gold);color:#1b3907;border-radius:99px;font-size:.72rem;font-weight:700;padding:2px 7px}
+.nl .n:empty{display:none}
+.main{margin-left:var(--sw);min-height:100vh}
+.bar{position:sticky;top:var(--top,0);z-index:20;display:flex;align-items:center;gap:12px;background:#fcf8efee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 16px}
+.bar>div{flex:1;min-width:0}
+.bar h1{font-size:1.35rem;margin:0}
+.menu{display:none;flex:none;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);cursor:pointer}
+.menu svg{width:22px;height:22px}
+.scrim{display:none}
+.wd{max-width:760px;margin:0 auto;padding:14px 16px 60px}
+.wd h2:first-child{margin-top:6px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.9rem}
+.srch{margin-bottom:12px}
+@media(min-width:900px){.stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:899px){
+ .side{transform:translateX(-100%)}
+ .side.open{transform:none;box-shadow:6px 0 24px rgba(0,0,0,.15)}
+ .main{margin-left:0}
+ .menu{display:inline-flex}
+ .scrim.on{display:block;position:fixed;left:0;right:0;bottom:0;top:var(--top,0);background:rgba(0,0,0,.35);z-index:25}
+}

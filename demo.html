@@ -8,12 +8,13 @@
 <title>RahisiBook demo</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="demo/style.css">
+<style>#ow{--top:49px}.demo{position:sticky;top:0;z-index:40}</style>
 </head>
 <body>
 <div class="demo"><div class="w"><span style="display:flex;align-items:center;font-weight:600;color:var(--lilac)"><span class="lm">✓</span>RahisiBook demo</span>
 <div class="seg" role="group" aria-label="View as"><button data-r="client">Client</button><button data-r="owner">Spa owner</button></div></div></div>
-<div class="w"><p class="hint" id="hint" style="margin-top:12px"></p></div>
 <div id="cv">
+<div class="w"><p class="hint" id="hint" style="margin-top:12px">You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.</p></div>
 <div class="w">
 <div class="top"><div><div class="brand"><i>♛</i> <span id="nm"></span></div><small id="tg"></small></div><a class="pill" id="call" href="#">Call</a></div>
 <h1>Pick your service. Pick your time.</h1>
@@ -45,8 +46,27 @@
 </div>
 </div>
 <div id="ow" hidden>
-<div class="w">
-<div class="top"><div><div class="brand"><i>♛</i> <span class="nm"></span></div><small id="odate"></small></div><button class="pill" id="wgo">Add walk-in</button></div>
+<div id="shell">
+<aside class="side" id="side" aria-label="Dashboard menu">
+<div class="brand"><i>♛</i> <span class="nm"></span></div>
+<button class="nl" data-ov="ov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</button>
+<button class="nl" data-ov="td"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Today<span class="n" id="n-td"></span></button>
+<button class="nl" data-ov="rm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>Reminders<span class="n" id="n-rm"></span></button>
+<button class="nl" data-ov="ob"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Bookings<span class="n" id="n-ob"></span></button>
+<button class="nl" data-ov="cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .7 3.5 2.6 3.5 5.8"/></svg>Clients<span class="n" id="n-cl"></span></button>
+<button class="nl" data-ov="os"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></svg>Services</button>
+<div class="gap"></div>
+<a class="nl" id="site" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>Booking page</a>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+<header class="bar">
+<button class="menu" id="menu" aria-label="Open menu" aria-controls="side"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div><h1 id="ttl">Overview</h1><small id="odate"></small></div>
+<button class="pill" id="wgo">+ Walk-in</button>
+</header>
+<div class="wd"><p class="hint" style="margin:0 0 12px">You are seeing what the spa owner sees. Confirm, remind, reschedule and manage services from here.</p>
 <div class="card" id="wf" hidden>
 <h2 style="margin-top:0">New booking</h2>
 <label for="wn">Name</label><input id="wn"><label for="wp">Phone</label><input id="wp" type="tel" inputmode="tel">
@@ -56,14 +76,18 @@
 <section id="ov">
 <div class="stats"><div class="card hi"><b id="k1"></b><span>Appointments today</span></div><div class="card"><b id="k2"></b><span>Waiting for you to confirm</span></div><div class="card"><b id="k3"></b><span>Earned today</span></div><div class="card"><b id="k4"></b><span>Booked, next 7 days</span></div></div>
 <h2>Next 7 days</h2><div class="card"><div class="chart" id="chart"></div></div>
-<h2 id="remh">Remind your next clients</h2><div id="rem"></div>
-<h2>Today</h2><div id="today"></div>
+<h2>Waiting for you to confirm</h2><div id="pend"></div>
 </section>
-<section id="ob" hidden><h2>All bookings</h2><div id="all"></div></section>
-<section id="os" hidden><h2>Services and prices</h2><p class="mut" style="margin-top:0">Changes here update your booking page. Set a price to 0 to hide a service.</p><div class="card" id="sv"></div>
+<section id="td" hidden><div id="today"></div></section>
+<section id="rm" hidden><p class="sub" id="remh"></p><div id="rem"></div></section>
+<section id="ob" hidden><div class="chips" id="flt" style="margin-bottom:12px"></div><div id="all"></div></section>
+<section id="cl" hidden><div class="srch"><label for="cq" style="margin-top:0">Search clients</label><input id="cq" type="search" placeholder="Name or phone"></div><div id="clients"></div></section>
+<section id="os" hidden><p class="sub">Changes here update your booking page. Set a price to 0 to hide a service.</p><div class="card" id="sv"></div>
 <h2>Add a service</h2><div class="card"><label for="xn">Service name</label><input id="xn"><label for="xh">Hours it takes</label><input id="xh" type="number" min="0.5" max="12" step="0.5" inputmode="decimal" placeholder="1"><label for="xp">Price</label><input id="xp" type="number" min="0" inputmode="numeric"><button class="cta" id="xsv">Add service</button></div></section>
 </div>
-<nav class="nav" id="nav"><button data-ov="ov">Overview</button><button data-ov="ob">Bookings</button><button data-ov="os">Services</button><button id="site">Website</button></nav>
+</div>
+</div>
+
 </div>
 <p class="foot" style="padding-bottom:90px">Demo with sample services and clients, saved in this browser. <a href="#" id="reset">Reset demo</a> · <a href="/">Back to RahisiBook</a></p>
 <script src="demo/config.js"></script>
@@ -118,34 +142,57 @@ window.clientInit=async function(){await loadSv();await loadTaken();await loadMi
 })();</script>
 <script>(function(){
 var R=RB,C=R.C,$=R.$,A=R.API;
-var list=[],ov="ov",rs=null;
-var SV=[],ALLSV=[];
+var list=[],ALLSV=[],SV=[],ov="ov",rs=null,flt="all",cq="";
+var SEC=["ov","td","rm","ob","cl","os"],TT={ov:"Overview",td:"Today",rm:"Reminders",ob:"Bookings",cl:"Clients",os:"Services"};
+var FL={all:"All",pending:"Waiting",confirmed:"Confirmed",done:"Done",closed:"Cancelled"};
 document.querySelectorAll(".nm").forEach(function(n){n.textContent=C.name});
 function taken(d,t,x){return list.some(function(b){return b.day==d&&b.time==t&&R.ACTIVE.indexOf(b.status)>-1&&b.id!=x})}
 async function load(){list=await A.list()||[];ALLSV=await A.services()||[];SV=ALLSV.filter(function(x){return x.price>0});draw()}
 async function run(f){try{await f()}catch(e){alert(e.message)}}
+function fm(b,k){return k=="all"||(k=="pending"&&b.status=="pending")||(k=="confirmed"&&(b.status=="confirmed"||b.status=="chair"))||(k=="done"&&b.status=="done")||(k=="closed"&&R.OFF.indexOf(b.status)>-1)}
+function clientsOf(){var m={},today=R.iso(0);
+ list.forEach(function(b){var k=R.norm(b.phone),c=m[k];if(!c)c=m[k]={name:b.name,phone:b.phone,visits:0,spent:0,last:"",next:null,seen:""};
+  if(b.day>=c.seen){c.seen=b.day;c.name=b.name}
+  if(b.status=="done"){c.visits++;c.spent+=b.price;if(b.day>c.last)c.last=b.day}
+  if(R.ACTIVE.indexOf(b.status)>-1&&b.day>=today){var s=b.day+b.time;if(!c.next||s<c.next.s)c.next={s:s,day:b.day,time:b.time}}});
+ return Object.keys(m).map(function(k){return m[k]}).sort(function(x,y){return y.spent-x.spent||(x.name<y.name?-1:1)})}
+function clientCard(c){
+ var bits=[c.visits+(c.visits==1?" visit":" visits")];if(c.last)bits.push("last "+R.nice(c.last));if(c.next)bits.push("next "+R.nice(c.next.day)+" "+R.ft(c.next.time));
+ return'<div class="card"><div class="row"><div><b>'+R.esc(c.name)+'</b><br><span class="mut">'+R.esc(c.phone)+'</span></div><div class="t">'+R.money(c.spent)+'</div></div><p class="mut" style="margin:8px 0 0">'+bits.join(" · ")+'</p><div class="acts"><a class="b" href="tel:+254'+R.norm(c.phone)+'">Call</a><a class="b g" target="_blank" rel="noopener" href="'+R.wa(c.phone,"Hi "+c.name+", this is "+C.name+".")+'">WhatsApp</a></div></div>'}
 function draw(){
- ["ov","ob","os"].forEach(function(s){$(s).hidden=s!=ov});
- document.querySelectorAll("#nav [data-ov]").forEach(function(b){b.className=b.dataset.ov==ov?"on":""});
+ SEC.forEach(function(s){$(s).hidden=s!=ov});
+ document.querySelectorAll(".side [data-ov]").forEach(function(b){b.className="nl"+(b.dataset.ov==ov?" on":"");b.setAttribute("aria-current",b.dataset.ov==ov?"page":"false")});
+ $("ttl").textContent=TT[ov];
  var today=R.iso(0),days=[0,1,2,3,4,5,6].map(function(i){return R.iso(i)}),live=function(b){return R.OFF.indexOf(b.status)<0};
- var tb=R.srt(list.filter(function(b){return b.day==today&&live(b)})),ctx={rs:rs,taken:taken};
+ var tb=R.srt(list.filter(function(b){return b.day==today&&live(b)})),ctx={rs:rs,taken:taken},pend=R.srt(list.filter(function(b){return b.status=="pending"}));
+ var card=function(b){return R.card(b,"o",ctx)};
  $("odate").textContent=new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
- $("k1").textContent=tb.length;$("k2").textContent=list.filter(function(b){return b.status=="pending"}).length;
+ $("k1").textContent=tb.length;$("k2").textContent=pend.length;
  $("k3").textContent=R.money(list.filter(function(b){return b.day==today&&b.status=="done"}).reduce(function(s,b){return s+b.price},0));
  $("k4").textContent=R.money(list.filter(function(b){return days.indexOf(b.day)>-1&&live(b)}).reduce(function(s,b){return s+b.price},0));
  $("chart").innerHTML=days.map(function(d,i){var n=list.filter(function(b){return b.day==d&&live(b)}).length;return'<div class="'+(i?"":"now")+'"><em>'+n+'</em><i style="height:'+(n?14+n*14:3)+'px"></i>'+new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short"})+'</div>'}).join("");
- var nd=R.openDays().filter(function(d){return d>today})[0];if(nd)$("remh").textContent="Remind clients for "+R.nice(nd);
+ $("pend").innerHTML=pend.length?pend.map(card).join(""):'<div class="card mut">Nothing waiting. New requests appear here.</div>';
+ $("today").innerHTML=tb.length?tb.map(card).join(""):'<div class="card mut">No appointments today.</div>';
+ var nd=R.openDays().filter(function(d){return d>today})[0];
  var due=R.srt(list.filter(function(b){return b.day==nd&&b.status=="confirmed"&&!b.reminded}));
- $("rem").innerHTML=due.length?due.map(function(b){return R.card(b,"o",ctx)}).join(""):'<div class="card mut">No reminders due. Confirmed clients for your next open day appear here.</div>';
- $("today").innerHTML=tb.length?tb.map(function(b){return R.card(b,"o",ctx)}).join(""):'<div class="card mut">No appointments today.</div>';
- $("all").innerHTML=R.srt(list).map(function(b){return R.card(b,"o",ctx)}).join("");
+ $("remh").textContent=nd?"Confirmed clients for "+R.nice(nd)+". Tap Send reminder to message them on WhatsApp.":"";
+ $("rem").innerHTML=due.length?due.map(card).join(""):'<div class="card mut">No reminders due. Confirmed clients for your next open day appear here.</div>';
+ $("flt").innerHTML=Object.keys(FL).map(function(k){return'<button class="chip '+(k==flt?"on":"")+'" data-f="'+k+'">'+FL[k]+' ('+list.filter(function(b){return fm(b,k)}).length+')</button>'}).join("");
+ var fb=R.srt(list.filter(function(b){return fm(b,flt)}));
+ $("all").innerHTML=fb.length?fb.map(card).join(""):'<div class="card mut">No bookings here.</div>';
+ var cs=clientsOf(),q=cq.trim().toLowerCase(),qd=q.replace(/\D/g,"");
+ var shown=q?cs.filter(function(c){return(c.name+" "+c.phone).toLowerCase().indexOf(q)>-1||(qd&&R.norm(c.phone).indexOf(qd)>-1)}):cs;
+ $("clients").innerHTML=shown.length?shown.map(clientCard).join(""):'<div class="card mut">'+(cs.length?"No clients match.":"No clients yet. They appear after their first booking.")+'</div>';
+ $("n-td").textContent=tb.length||"";$("n-rm").textContent=due.length||"";$("n-ob").textContent=pend.length||"";$("n-cl").textContent=cs.length||"";
  $("sv").innerHTML=ALLSV.map(function(x,i){return'<div class="srow" '+(i?"":'style="border-top:0"')+'><span>'+R.esc(x.name)+(x.price>0?"":' <small>(hidden)</small>')+'</span><span class="mut">'+x.hours+' hr</span><input type="number" min="0" inputmode="numeric" value="'+x.price+'" data-sp="'+x.id+'" aria-label="Price for '+R.esc(x.name)+'"><button class="b" data-a="svdel" data-i="'+x.id+'">Remove</button></div>'}).join("");
  $("ws").innerHTML=SV.map(function(x,i){return'<option value="'+i+'">'+R.esc(x.name)+' – '+R.money(x.price)+'</option>'}).join("");
  $("wd").innerHTML=[0,1,2,3,4,5,6].map(function(i){return'<option value="'+R.iso(i)+'">'+R.nice(R.iso(i))+'</option>'}).join("");
  $("wt").innerHTML=C.openTimes.map(function(t){return'<option value="'+t+'">'+R.ft(t)+'</option>'}).join("")}
+function closeMenu(){$("side").classList.remove("open");$("scrim").classList.remove("on")}
 $("ow").addEventListener("click",function(e){
- var t=e.target.closest("[data-a],[data-ov]");if(!t)return;var d=t.dataset;
- if(d.ov){ov=d.ov;rs=null;draw();window.scrollTo(0,0);return}
+ var t=e.target.closest("[data-a],[data-ov],[data-f]");if(!t)return;var d=t.dataset;
+ if(d.ov){ov=d.ov;rs=null;closeMenu();draw();window.scrollTo(0,0);return}
+ if(d.f){flt=d.f;draw();return}
  var a=d.a,b=list.filter(function(x){return x.id==d.i})[0];
  if(a=="resch")rs={id:b.id,d:b.day,t:b.time};
  else if(a=="rday"){rs.d=d.v;rs.t=""}
@@ -161,7 +208,10 @@ $("xsv").onclick=function(){run(async function(){var n=$("xn").value.trim(),h=+$
  if(!n||pv===""||!(p>=0)){alert("Enter a service name and a price.");return}
  if(!(h>0&&h<=12)){alert("Hours must be between 0.5 and 12.");return}
  await A.addService({name:n,hours:h,price:p,position:ALLSV.length});$("xn").value="";$("xh").value="";$("xp").value="";await load()})};
-$("wgo").onclick=function(){$("wf").hidden=!$("wf").hidden};
+$("cq").oninput=function(){cq=this.value;draw()};
+$("menu").onclick=function(){var o=$("side").classList.toggle("open");$("scrim").classList.toggle("on",o)};
+$("scrim").onclick=closeMenu;
+$("wgo").onclick=function(){$("wf").hidden=!$("wf").hidden;window.scrollTo(0,0)};
 $("wcl").onclick=function(){$("wf").hidden=true};
 $("wsv").onclick=function(){run(async function(){
  var n=$("wn").value.trim(),p=$("wp").value.trim(),s=SV[+$("ws").value];
@@ -170,15 +220,13 @@ $("wsv").onclick=function(){run(async function(){
  if(taken(day,time)){alert("That time is already booked. Pick another.");return}
  await A.add({name:n,phone:p,service:s.name,price:s.price,day:day,time:time,status:"confirmed",note:""});
  $("wn").value="";$("wp").value="";$("wf").hidden=true;await load()})};
-$("site").onclick=function(){window.setRole("client")};
-window.ownerInit=function(){run(load)};
+$("site").onclick=function(e){e.preventDefault();window.setRole("client")};window.ownerInit=function(){closeMenu();run(load)};
 })();</script>
 <script>
 (function(){
  var $=RB.$;
  window.setRole=function(r){$("cv").hidden=r!="client";$("ow").hidden=r!="owner";
   document.querySelectorAll(".seg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.r==r)});
-  $("hint").textContent=r=="client"?"You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.":"You are seeing what the spa owner sees. Confirm, remind, reschedule and manage services from here.";
   if(r=="client")window.clientInit();else window.ownerInit();window.scrollTo(0,0)};
  document.querySelector(".seg").addEventListener("click",function(e){var b=e.target.closest("[data-r]");if(b)window.setRole(b.dataset.r)});
  $("reset").onclick=function(e){e.preventDefault();try{localStorage.removeItem("rb_demo_"+RB.C.name);localStorage.removeItem("rb_svc_"+RB.C.name)}catch(x){}location.reload()};
