@@ -3,16 +3,20 @@
 <title>Terms of Service – RahisiBook</title><meta name="theme-color" content="#27500A">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="color-scheme" content="light dark">
+<script>try{var t=localStorage.getItem("rahisi-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
-:root{--bg:#fcf8ef;--panel:#faeeda;--ink:#1e2a16;--muted:#5c6152;--green:#27500a;--gold:#ef9f27;--border:rgba(30,42,22,.14)}
+:root{--bg:#fcf8ef;--panel:#faeeda;--ink:#1e2a16;--muted:#5c6152;--green:#27500a;--gold:#ef9f27;--border:rgba(30,42,22,.14);--text:#34402c;--card:#fff;--btn-ink:#fff;color-scheme:light}
+:root[data-theme=dark]{--bg:#12170e;--panel:#2b2818;--ink:#f0ecdf;--muted:#a9b09c;--green:#8fcf5a;--border:rgba(255,255,255,.14);--text:#d6d9cb;--card:#1b2216;--btn-ink:#10200a;color-scheme:dark}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12170e;--panel:#2b2818;--ink:#f0ecdf;--muted:#a9b09c;--green:#8fcf5a;--border:rgba(255,255,255,.14);--text:#d6d9cb;--card:#1b2216;--btn-ink:#10200a;color-scheme:dark}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 Inter,Arial,sans-serif}
 a{color:var(--green)}h1,h2{font-family:Fraunces,Georgia,serif;line-height:1.2}
 header{border-bottom:1px solid var(--border)}.w{max-width:720px;margin:auto;padding:0 20px}
 header .w{height:64px;display:flex;align-items:center}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;color:var(--green)}
-.lm{display:grid;place-items:center;width:30px;height:30px;background:var(--gold);border-radius:10px}
+.lm{display:grid;place-items:center;width:30px;height:30px;background:var(--gold);border-radius:10px;color:#1b3907}
 main{padding:40px 0 60px}h1{font-size:2.2rem;margin:0 0 6px}h2{font-size:1.35rem;margin:32px 0 8px}
-.meta{color:var(--muted);font-size:.9rem;margin:0 0 20px}p,li{color:#34402c}ul{padding-left:20px}
+.meta{color:var(--muted);font-size:.9rem;margin:0 0 20px}p,li{color:var(--text)}ul{padding-left:20px}
 footer{border-top:1px solid var(--border);padding:24px 0;color:var(--muted);font-size:.85rem}footer a{margin-right:14px}
 </style></head><body>
 <header><div class="w"><a class="logo" href="/"><span class="lm">✓</span>RahisiBook</a></div></header>
