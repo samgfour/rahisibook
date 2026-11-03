@@ -85,6 +85,13 @@ var API={
   return sb("/rest/v1/bookings",{method:"POST",body:b,token:API.token(),prefer:"return=minimal"})}
 };
 /* theme from config */
-var st=document.documentElement.style;if(C.colors){st.setProperty("--lilac",C.colors.main);st.setProperty("--gold",C.colors.accent);st.setProperty("--bg",C.colors.bg)}
+function mix(h,p){h=String(h).replace("#","");if(h.length==3)h=h.replace(/./g,"$&$&");var n=parseInt(h,16),c=[n>>16&255,n>>8&255,n&255].map(function(v){return Math.round(v+(255-v)*p)});return"#"+c.map(function(v){return("0"+v.toString(16)).slice(-2)}).join("")}
+if(C.colors&&document.head){var lt=mix(C.colors.main,.6),el=document.createElement("style");
+ el.textContent=":root{--lilac:"+C.colors.main+";--gold:"+C.colors.accent+";--bg:"+C.colors.bg+"}:root[data-theme=dark]{--lilac:"+lt+";--gold:"+C.colors.accent+"}@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--lilac:"+lt+";--gold:"+C.colors.accent+"}}";document.head.appendChild(el)}
+/* dark mode: follows the phone's setting; the button overrides it and remembers the choice */
+var TK="rb_theme",root=document.documentElement;
+try{var sv=localStorage.getItem(TK);if((sv=="dark"||sv=="light")&&root.setAttribute)root.setAttribute("data-theme",sv)}catch(e){}
+function isDark(){var t=root.getAttribute("data-theme");return t?t=="dark":!!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)}
+if(document.addEventListener)document.addEventListener("click",function(e){if(!e.target.closest("[data-theme-btn]"))return;var n=isDark()?"light":"dark";root.setAttribute("data-theme",n);try{localStorage.setItem(TK,n)}catch(x){}});
 window.RB={openDays:openDays,C:C,LIVE:LIVE,ACTIVE:ACTIVE,OFF:OFF,LBL:LBL,$:$,esc:esc,norm:norm,iso:iso,nice:nice,ft:ft,money:money,wa:wa,srt:srt,chDay:chDay,chTime:chTime,card:card,API:API};
 })();

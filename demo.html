@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#27500a">
 <title>RahisiBook demo</title>
 <link rel="icon" href="data:,">
@@ -16,7 +16,7 @@
 <div id="cv">
 <div class="w"><p class="hint" id="hint" style="margin-top:12px">You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.</p></div>
 <div class="w">
-<div class="top"><div><div class="brand"><i>♛</i> <span id="nm"></span></div><small id="tg"></small></div><a class="pill" id="call" href="#">Call</a></div>
+<div class="top"><div><div class="brand"><i>♛</i> <span id="nm"></span></div><small id="tg"></small></div><div class="hd"><button class="pill ico" data-theme-btn aria-label="Switch dark or light mode" title="Dark / light">◐</button><a class="pill" id="call" href="#">Call</a></div></div>
 <h1>Pick your service. Pick your time.</h1>
 <p class="mut" style="margin:0">Book online. No back-and-forth messages.</p>
 <div class="tabs"><button id="tb" data-cv="book">Book a visit</button><button id="tm" data-cv="mine">My bookings</button></div>
@@ -56,6 +56,7 @@
 <button class="nl" data-ov="cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .7 3.5 2.6 3.5 5.8"/></svg>Clients<span class="n" id="n-cl"></span></button>
 <button class="nl" data-ov="os"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></svg>Services</button>
 <div class="gap"></div>
+<button class="nl" data-theme-btn><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>Dark / light</button>
 <a class="nl" id="site" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>Booking page</a>
 </aside>
 <div class="scrim" id="scrim"></div>
