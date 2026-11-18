@@ -49,7 +49,7 @@ async function sb(path,o){o=o||{};var h={apikey:C.supabaseKey,"Content-Type":"ap
  if(!r.ok)throw new Error((j&&(j.message||j.error_description||j.msg))||"Something went wrong. Please try again.");return j}
 var SKEY="rb_svc_"+C.name,svcs=null;
 function ssave(){try{localStorage.setItem(SKEY,JSON.stringify(svcs))}catch(e){}}
-function cfgSvc(){return C.services.map(function(s,i){return{id:"c"+i,name:s.name,hours:s.hours,price:s.price,position:i}})}
+function cfgSvc(){return C.services.map(function(s,i){return{id:"c"+i,name:s.name,hours:s.hours,price:s.price,position:i,category:s.category||"",type:s.type||""}})}
 function sload(){if(svcs)return svcs;try{svcs=JSON.parse(localStorage.getItem(SKEY)||"null")}catch(e){}
  if(!svcs){svcs=cfgSvc();ssave()}return svcs}
 var SURL="/rest/v1/services?select=*&order=position.asc,name.asc";
@@ -58,10 +58,10 @@ var API={
   var rows=null;try{rows=await sb(SURL,{token:API.token()||undefined})}catch(e){return cfgSvc()}
   if(!rows||!rows.length){
    if(!API.token())return cfgSvc();
-   try{await sb("/rest/v1/services",{method:"POST",body:C.services.map(function(s,i){return{name:s.name,hours:s.hours,price:s.price,position:i}}),token:API.token(),prefer:"return=minimal"});rows=await sb(SURL,{token:API.token()})}catch(e){return cfgSvc()}}
+   try{await sb("/rest/v1/services",{method:"POST",body:C.services.map(function(s,i){return{name:s.name,hours:s.hours,price:s.price,position:i,category:s.category||"",type:s.type||""}}),token:API.token(),prefer:"return=minimal"});rows=await sb(SURL,{token:API.token()})}catch(e){return cfgSvc()}}
   return rows},
- addService:async function(s){if(!LIVE){var a=sload();a.push({id:"s"+Date.now(),name:s.name,hours:s.hours,price:s.price,position:a.length});ssave();return}
-  return sb("/rest/v1/services",{method:"POST",body:{name:s.name,hours:s.hours,price:s.price,position:s.position||0},token:API.token(),prefer:"return=minimal"})},
+ addService:async function(s){if(!LIVE){var a=sload();a.push({id:"s"+Date.now(),name:s.name,hours:s.hours,price:s.price,position:a.length,category:s.category||"",type:s.type||""});ssave();return}
+  return sb("/rest/v1/services",{method:"POST",body:{name:s.name,hours:s.hours,price:s.price,position:s.position||0,category:s.category||"",type:s.type||""},token:API.token(),prefer:"return=minimal"})},
  setPrice:async function(id,price){if(!LIVE){var x=sload().filter(function(v){return v.id==id})[0];if(x){x.price=price;ssave()}return}
   return sb("/rest/v1/services?id=eq."+encodeURIComponent(id),{method:"PATCH",body:{price:price},token:API.token(),prefer:"return=minimal"})},
  removeService:async function(id){if(!LIVE){svcs=sload().filter(function(v){return v.id!=id});ssave();return}
@@ -69,7 +69,7 @@ var API={
  taken:async function(from,to){if(!LIVE)return dload().filter(function(b){return ACTIVE.indexOf(b.status)>-1&&b.day>=from&&b.day<=to}).map(function(b){return{day:b.day,time:b.time}});
   return sb("/rest/v1/rpc/taken_slots",{method:"POST",body:{p_from:from,p_to:to}})},
  create:async function(b){if(!LIVE){if(clash(b.day,b.time))throw new Error("That time was just taken. Please pick another.");var n={id:String(Math.random()).slice(2),name:b.name,phone:b.phone,service:b.service,price:b.price,day:b.day,time:b.time,status:"pending",note:b.note||"",rescheduled:false,reminded:false};dload().push(n);dsave();return n.id}
-  return sb("/rest/v1/rpc/create_booking",{method:"POST",body:{p_name:b.name,p_phone:b.phone,p_service:b.service,p_price:b.price,p_day:b.day,p_time:b.time,p_note:b.note||""}})},
+  return sb("/rest/v1/rpc/create_booking",{method:"POST",body:{p_name:b.name,p_phone:b.phone,p_service:b.service,p_price:b.price,p_day:b.day,p_time:b.time,p_note:b.note||"",p_items:b.items||null}})},
  mine:async function(phone){if(!LIVE)return srt(dload().filter(function(b){return norm(b.phone)==norm(phone)}));return sb("/rest/v1/rpc/my_bookings",{method:"POST",body:{p_phone:phone}})},
  change:async function(id,phone,action,day,time){
   if(!LIVE){var b=dload().filter(function(x){return x.id==id&&norm(x.phone)==norm(phone)})[0];if(!b||ACTIVE.indexOf(b.status)<0)throw new Error("This booking cannot be changed.");

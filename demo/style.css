@@ -94,3 +94,75 @@ input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--lin
 
 .ico{width:44px;padding:0;font-size:1.1rem;line-height:1}
 .hd{display:flex;gap:8px;align-items:center}
+
+/* ---- Multi-step booking form ---- */
+.bk{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:14px 0;box-shadow:0 2px 10px var(--shadow)}
+.bk-top{background:var(--panel);padding:14px 16px 16px;border-bottom:1px solid var(--line)}
+.bk-t{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.bk-t b{font-family:Fraunces,Georgia,serif;font-size:1.15rem}
+.auto{font-size:.7rem;color:var(--mut);background:var(--hov);border-radius:6px;padding:3px 8px;opacity:0;transition:opacity .3s}
+.auto.on{opacity:1}
+.stp{display:flex;align-items:center}
+.stp .dot{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;font-weight:700;background:var(--hov);color:var(--mut);border:2px solid transparent}
+.stp .dot.done{background:var(--lilac);color:var(--dk);cursor:pointer}
+.stp .dot.cur{background:var(--card);color:var(--lilac);border-color:var(--lilac);box-shadow:0 0 0 3px var(--sel)}
+.stp .ln{flex:1;height:2px;background:var(--line)}
+.stp .ln.done{background:var(--lilac)}
+.bk-b{padding:16px}
+.sh{background:var(--lilac);color:var(--dk);font-family:Fraunces,Georgia,serif;font-weight:600;padding:11px 14px;border-radius:10px 10px 0 0}
+.box{border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;padding:12px 14px;background:var(--bg);margin-bottom:14px}
+.box.solo{border-top:1px solid var(--line);border-radius:10px}
+.empty{text-align:center;color:var(--mut);padding:18px 10px;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:.9rem}
+.empty b{display:block;color:var(--ink);font-weight:500;margin-bottom:2px}
+.addp{border:1px solid var(--line);border-radius:12px;padding:6px 14px 14px;margin-bottom:14px;background:var(--bg)}
+.addp h3{font-family:Fraunces,Georgia,serif;font-size:1.05rem;margin:12px 0 4px}
+.addp label{margin-top:10px;font-weight:500}
+.chp{display:inline-flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:.78rem;color:var(--ink);margin:6px 6px 0 0}
+.ti{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--bg)}
+.ti .nm{font-weight:600}
+.ti .qs{display:flex;align-items:center;gap:8px;flex:none}
+.ti select{width:auto;min-height:40px;padding:6px 8px}
+.ib{border:1px solid var(--line);background:var(--card);border-radius:10px;width:40px;height:40px;cursor:pointer;color:var(--mut);display:grid;place-items:center;font-size:1rem}
+.tot{display:flex;justify-content:space-between;padding:12px 14px;background:var(--card);font-size:.85rem;color:var(--mut)}
+.tot b{display:block;color:var(--ink);font-size:1.05rem}
+.tot div:last-child{text-align:right}
+.nav2{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.nav2 button{min-height:48px;padding:0 22px;border-radius:10px;font-weight:700;cursor:pointer}
+.nav2 .prev{background:var(--card);border:1px solid var(--line)}
+.nav2 .next{background:var(--lilac);color:var(--dk);border:0;margin-left:auto}
+.nav2 .next:disabled{opacity:.4;cursor:not-allowed}
+.cal{border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-bottom:14px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;background:var(--lilac);color:var(--dk);padding:6px 8px;font-family:Fraunces,Georgia,serif;font-weight:600}
+.cal-h button{background:none;border:0;color:var(--dk);width:44px;height:44px;font-size:1.3rem;cursor:pointer;border-radius:8px}
+.cal-h button:disabled{opacity:.35;cursor:not-allowed}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;padding:10px;background:var(--panel)}
+.cal-g .wk{text-align:center;font-size:.72rem;color:var(--mut);padding:2px 0}
+.cal-g button,.cal-g i{min-height:42px;border-radius:7px;border:1px solid var(--line);background:var(--card);font-weight:500;cursor:pointer;font-size:.9rem}
+.cal-g i{visibility:hidden}
+.cal-g button:disabled{background:var(--hov);color:var(--mut);opacity:.55;cursor:not-allowed}
+.cal-g button.now{outline:1.5px solid var(--lilac);outline-offset:-1.5px}
+.cal-g button.on{background:var(--lilac);color:var(--dk);border-color:var(--lilac);font-weight:700}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;background:var(--panel)}
+.tgrid button{min-height:44px;border-radius:7px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:500}
+.tgrid button.on{background:var(--lilac);color:var(--dk);border-color:var(--lilac);font-weight:700}
+.tgrid button:disabled{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.pick{display:flex;gap:24px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px;background:var(--bg)}
+.pick small{display:block}.pick b{font-weight:500}
+.note{background:var(--panel);border:1px solid var(--gold);color:var(--amber);border-radius:10px;padding:10px 12px;font-size:.85rem;margin-bottom:14px}
+.note b{color:inherit}
+.ok,.bad{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.88rem;margin-bottom:14px}
+.ok{color:var(--green);border-color:var(--green)}
+.bad{color:var(--mut)}
+.rq{color:var(--red)}
+.hint{font-size:.78rem;color:var(--mut);margin-top:3px}
+.kv{margin:0 0 10px}.kv small{display:block}.kv b{font-weight:500}
+.ln2{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--bg)}
+.done5{text-align:center}
+.done5 .hd5{background:var(--lilac);color:var(--dk);border-radius:12px;padding:22px 14px;margin-bottom:14px}
+.done5 .hd5 span{display:grid;place-items:center;width:52px;height:52px;border:2px solid var(--dk);border-radius:50%;margin:0 auto 8px;font-size:1.6rem}
+.done5 .hd5 b{font-family:Fraunces,Georgia,serif;font-size:1.3rem}
+.refb{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.refb b{display:block;font-size:1.3rem;letter-spacing:.04em;margin-top:2px}
+.done5 .acts{justify-content:center}
+.fine{font-size:.82rem;color:var(--mut)}
+.fine a{color:var(--lilac)}
