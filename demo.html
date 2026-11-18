@@ -17,22 +17,12 @@
 <div class="w"><p class="hint" id="hint" style="margin-top:12px">You are seeing what a spa's client sees. Book, then tap Spa owner above to confirm it.</p></div>
 <div class="w">
 <div class="top"><div><div class="brand"><i>♛</i> <span id="nm"></span></div><small id="tg"></small></div><div class="hd"><button class="pill ico" data-theme-btn aria-label="Switch dark or light mode" title="Dark / light">◐</button><a class="pill" id="call" href="#">Call</a></div></div>
-<h1>Pick your service. Pick your time.</h1>
-<p class="mut" style="margin:0">Book online. No back-and-forth messages.</p>
+<h1>Pick your treatment. Pick your time.</h1>
+<p class="mut" style="margin:0">Book online in a few taps. No back-and-forth messages.</p>
 <div class="tabs"><button id="tb" data-cv="book">Book a visit</button><button id="tm" data-cv="mine">My bookings</button></div>
 
 <section id="cb">
-<h2 style="margin-top:6px">1. Choose a service</h2><div id="svcs"></div>
-<h2>2. Choose a day</h2><div class="chips" id="days"></div><small id="closed"></small>
-<h2>3. Choose a time</h2><div class="chips" id="times"></div>
-<h2>4. Your details</h2>
-<label for="cn">Full name</label><input id="cn" autocomplete="name">
-<label for="cp">Phone number</label><input id="cp" type="tel" inputmode="tel" autocomplete="tel" placeholder="07XX XXX XXX">
-<label for="cx">Notes (optional)</label><textarea id="cx" rows="2"></textarea>
-<div class="sum" id="sum"></div>
-<button class="cta" id="cgo">Confirm booking</button>
-<div class="card" id="cdone" hidden style="margin-top:12px"></div>
-<p class="mut" style="font-size:.8rem">You can change the time or cancel in My bookings. No payment is taken.</p>
+<div class="bk"><div class="bk-top"><div class="bk-t"><b>Book your visit</b><span class="auto" id="auto">Auto-saved</span></div><div class="stp" id="stp"></div></div><div class="bk-b" id="bkb"></div></div>
 </section>
 
 <section id="cm" hidden>
@@ -84,7 +74,7 @@
 <section id="ob" hidden><div class="chips" id="flt" style="margin-bottom:12px"></div><div id="all"></div></section>
 <section id="cl" hidden><div class="srch"><label for="cq" style="margin-top:0">Search clients</label><input id="cq" type="search" placeholder="Name or phone"></div><div id="clients"></div></section>
 <section id="os" hidden><p class="sub">Changes here update your booking page. Set a price to 0 to hide a service.</p><div class="card" id="sv"></div>
-<h2>Add a service</h2><div class="card"><label for="xn">Service name</label><input id="xn"><label for="xh">Hours it takes</label><input id="xh" type="number" min="0.5" max="12" step="0.5" inputmode="decimal" placeholder="1"><label for="xp">Price</label><input id="xp" type="number" min="0" inputmode="numeric"><button class="cta" id="xsv">Add service</button></div></section>
+<h2>Add a service</h2><div class="card"><label for="xn">Service name</label><input id="xn"><label for="xc">Category (optional)</label><input id="xc" placeholder="e.g. Face, Body, Hair" list="xcl"><datalist id="xcl"></datalist><label for="xt">Type (optional)</label><input id="xt" placeholder="e.g. Facials, Massage"><label for="xh">Hours it takes</label><input id="xh" type="number" min="0.5" max="12" step="0.5" inputmode="decimal" placeholder="1"><label for="xp">Price</label><input id="xp" type="number" min="0" inputmode="numeric"><button class="cta" id="xsv">Add service</button></div></section>
 </div>
 </div>
 </div>
@@ -94,52 +84,150 @@
 <script src="demo/config.js"></script>
 <script src="demo/rahisibook.js"></script>
 <script>(function(){
-var R=RB,C=R.C,$=R.$,A=R.API;
-var cv="book",sel={s:-1,d:"",t:""},rs=null,sph="",mine=[],tk=[];
-var SV=[];
+var R=RB,C=R.C,$=R.$,A=R.API,esc=R.esc;
+var AHEAD=C.bookAheadDays||60,LOCS=C.locations||[],DKEY="rb_draft_"+C.name;
+var cv="book",rs=null,sph="",mine=[],tk=[],SV=[],busy=false;
+function blank(){return{step:1,items:[],cat:"",typ:"",svc:"",d:"",t:"",mo:"",fn:"",ph:"",em:"",loc:"",nt:"",ref:"",wa:""}}
+var F=blank();
 function taken(d,t){return tk.some(function(x){return x.day==d&&x.time==t})}
-async function loadSv(){SV=(await A.services()||[]).filter(function(x){return x.price>0});if(sel.s>=SV.length)sel.s=-1}
-async function loadTaken(){try{tk=await A.taken(R.iso(0),R.iso(9))||[]}catch(e){tk=[]}}
+function slotOff(d,t,x){var n=new Date(),hm=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");return taken(d,t)||(d==R.iso(0)&&t<=hm)}
+async function loadSv(){SV=(await A.services()||[]).filter(function(x){return x.price>0})}
+async function loadTaken(){try{tk=await A.taken(R.iso(0),R.iso(AHEAD))||[]}catch(e){tk=[]}}
 async function loadMine(){mine=R.norm(sph).length>=9?(await A.mine(sph)||[]):[]}
-$("nm").textContent=C.name;$("tg").textContent=C.tagline+" · "+C.city;$("call").href="tel:"+C.phone;
-var DN=["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
-$("closed").textContent=C.closedDays.length?"Closed "+C.closedDays.map(function(d){return DN[d]}).join(" and ")+".":"";
+/* ---- draft (auto-save) ---- */
+var saveT;
+function save(){try{if(F.step<5)localStorage.setItem(DKEY,JSON.stringify(F));else localStorage.removeItem(DKEY)}catch(e){}
+ var a=$("auto");if(a){a.classList.add("on");clearTimeout(saveT);saveT=setTimeout(function(){a.classList.remove("on")},1500)}}
+function restore(){try{var d=JSON.parse(localStorage.getItem(DKEY)||"null");if(d&&d.step<5){F=Object.assign(blank(),d)}}catch(e){}
+ F.items=F.items.filter(function(i){return svOf(i.n)});
+ if(F.d&&(F.d<R.iso(0)||!dOpen(F.d))){F.d="";F.t=""}
+ if(F.t&&slotOff(F.d,F.t))F.t="";
+ if(F.step>1&&!F.items.length)F.step=1;
+ if(F.step>2&&!(F.d&&F.t))F.step=2;
+ F.cat=F.typ=F.svc=""}
+/* ---- helpers ---- */
+function svOf(n){return SV.filter(function(x){return x.name==n})[0]}
+function dur(h){var m=Math.round(h*60);if(m<60)return m+" min";var a=Math.floor(m/60),r=m%60;return a+" hr"+(r?" "+r+" min":"")}
+function totals(){var p=0,h=0;F.items.forEach(function(i){var s=svOf(i.n);if(s){p+=s.price*i.q;h+=s.hours}});return{p:p,h:h}}
+function uniq(a){return a.filter(function(v,i){return a.indexOf(v)==i})}
+function catOf(s){return s.category||(SV.some(function(x){return x.category})?"Other":"")}
+function cats(){return uniq(SV.map(catOf)).filter(Boolean)}
+function typesIn(c){return uniq(SV.filter(function(s){return catOf(s)==c}).map(function(s){return s.type||""})).filter(Boolean)}
+function opts(list,cur,ph){return'<option value="">'+ph+'</option>'+list.map(function(v){return'<option'+(v==cur?" selected":"")+'>'+esc(v)+'</option>'}).join("")}
+function chosen(){return F.items.map(function(i){return i.n})}
+function avail(){var hasC=cats().length>0;return SV.filter(function(s){
+ if(chosen().indexOf(s.name)>-1)return false;
+ if(hasC&&catOf(s)!=F.cat)return false;
+ if(hasC&&typesIn(F.cat).length&&(s.type||"")!=F.typ)return false;return true})}
+function dOpen(d){if(d<R.iso(0)||d>R.iso(AHEAD))return false;if(C.closedDays.indexOf(new Date(d+"T00:00").getDay())>-1)return false;return C.openTimes.some(function(t){return!slotOff(d,t)})}
+function ok1(){return F.items.length>0}
+function ok2(){return!!(F.d&&F.t)}
+function ok3(){return!!(F.fn.trim()&&R.norm(F.ph).length>=9&&(!LOCS.length||F.loc))}
+function okN(){return F.step==1?ok1():F.step==2?ok2():F.step==3?ok3():true}
+/* ---- pieces ---- */
+function selBox(edit){var T=totals();if(!F.items.length)return"";
+ var rows=F.items.map(function(i,ix){var s=svOf(i.n);if(!s)return"";
+  var q=edit?'<div class="qs"><select data-f="q" data-i="'+ix+'" aria-label="People">'+[1,2,3,4,5,6].map(function(n){return'<option value="'+n+'"'+(n==i.q?" selected":"")+'>'+n+(n==1?" person":" people")+'</option>'}).join("")+'</select><button class="ib" data-a="rm" data-v="'+ix+'" aria-label="Remove">✕</button></div>':"";
+  return'<div class="ti"><div><div class="nm">'+esc(s.name)+(!edit&&i.q>1?" ×"+i.q:"")+'</div><span class="chp">'+R.money(s.price)+(i.q>1?" each":"")+'</span><span class="chp">'+dur(s.hours)+'</span></div>'+q+'</div>'}).join("");
+ return'<div class="sh">Selected treatments</div><div class="box" style="padding:0;overflow:hidden">'+rows+'<div class="tot"><div>Duration estimate<b>'+dur(T.h)+'</b></div><div>Total price<b>'+R.money(T.p)+'</b></div></div></div>'}
+function addPanel(){var hasC=cats().length>0,t=hasC&&typesIn(F.cat).length,h='<div class="addp"><h3>'+(F.items.length?"Add another treatment?":"Select a treatment")+'</h3>';
+ if(hasC)h+='<label for="fc">Treatment category</label><select id="fc" data-f="cat">'+opts(cats(),F.cat,"Select category")+'</select>';
+ if(t)h+='<label for="ft">Treatment type</label><select id="ft" data-f="typ">'+opts(typesIn(F.cat),F.typ,"Select type")+'</select>';
+ var show=!hasC||(F.cat&&(!t||F.typ)),list=show?avail():[];
+ h+='<label for="fs">'+(hasC?"Specific treatment":"Treatment")+'</label><select id="fs" data-f="svc"'+(show?"":" disabled")+'><option value="">Select treatment</option>'+list.map(function(s){return'<option value="'+esc(s.name)+'"'+(s.name==F.svc?" selected":"")+'>'+esc(s.name)+' – '+R.money(s.price)+'</option>'}).join("")+'</select>';
+ var s=F.svc&&svOf(F.svc);
+ if(s)h+='<div style="margin-top:8px"><span class="chp">Price: <b>'+R.money(s.price)+'</b></span><span class="chp">Duration: <b>'+dur(s.hours)+'</b></span></div>';
+ if(show&&!list.length&&!F.svc)h+='<p class="hint">You have added everything in this list.</p>';
+ return h+'<button class="cta" data-a="add"'+(s?"":" disabled")+' style="margin-top:12px'+(s?"":";opacity:.4")+'">+ Add treatment</button></div>'}
+function nav(prev,next,label,dis){return'<div class="nav2">'+(prev?'<button class="prev" data-a="prev">Previous</button>':"")+'<button class="next" id="nx" data-a="'+next+'"'+(dis?" disabled":"")+'>'+label+'</button></div>'}
+function calHtml(){var mo=F.mo||(F.d?F.d.slice(0,7):R.iso(0).slice(0,7)),y=+mo.slice(0,4),m=+mo.slice(5)-1,first=new Date(y,m,1),n=new Date(y,m+1,0).getDate(),cur=R.iso(0).slice(0,7),last=R.iso(AHEAD).slice(0,7);
+ var g=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(function(d){return'<div class="wk">'+d+'</div>'}).join("");
+ for(var i=0;i<first.getDay();i++)g+="<i></i>";
+ for(var d=1;d<=n;d++){var iso=mo+"-"+String(d).padStart(2,"0");g+='<button data-a="day" data-v="'+iso+'" class="'+(iso==F.d?"on ":"")+(iso==R.iso(0)?"now":"")+'"'+(dOpen(iso)?"":" disabled")+'>'+d+'</button>'}
+ return'<div class="cal"><div class="cal-h"><button data-a="mo" data-v="-1" aria-label="Previous month"'+(mo<=cur?" disabled":"")+'>‹</button><span>'+first.toLocaleDateString("en-GB",{month:"long",year:"numeric"})+'</span><button data-a="mo" data-v="1" aria-label="Next month"'+(mo>=last?" disabled":"")+'>›</button></div><div class="cal-g">'+g+'</div></div>'}
+function step1(){return(F.items.length?selBox(true):'<div class="empty"><b>No treatments selected yet.</b>Please choose a treatment below.</div>')+addPanel()+nav(false,"next","Continue",!ok1())}
+function step2(){var h=selBox(false)+'<h2 style="margin-top:4px">Select a day and time</h2>'+calHtml();
+ h+='<div class="sh">Time</div><div class="box solo" style="padding:0;border-top:0;border-radius:0 0 10px 10px;overflow:hidden">';
+ h+=F.d?'<div class="tgrid">'+C.openTimes.map(function(t){return'<button data-a="tm" data-v="'+t+'" class="'+(t==F.t?"on":"")+'"'+(slotOff(F.d,t)?" disabled":"")+'>'+R.ft(t)+'</button>'}).join("")+'</div>':'<div class="empty" style="margin:0;border:0;border-radius:0">Please select a day first.</div>';
+ h+='</div>';
+ if(F.d&&F.t)h+='<div class="pick"><div><small>Day</small><b>'+R.nice(F.d)+'</b></div><div><small>Time</small><b>'+R.ft(F.t)+'</b></div></div>';else h+='<div style="height:14px"></div>';
+ return h+'<div class="note"><b>Note:</b> This is a booking request. '+esc(C.name)+' will confirm your booking.</div>'+nav(true,"next","Continue",!ok2())}
+function step3(){var h=selBox(false)+'<h2 style="margin-top:4px">Your details</h2><div class="sh">Personal information</div><div class="box">'
+ +'<label for="fn">Full name <span class="rq">*</span></label><input id="fn" data-f="fn" autocomplete="name" value="'+esc(F.fn)+'" placeholder="Jane Wanjiru">'
+ +'<label for="fp">Phone number <span class="rq">*</span></label><input id="fp" data-f="ph" type="tel" inputmode="tel" autocomplete="tel" value="'+esc(F.ph)+'" placeholder="07XX XXX XXX"><div class="hint">We may call or WhatsApp you to confirm.</div>'
+ +'<label for="fe">Email (optional)</label><input id="fe" data-f="em" type="email" autocomplete="email" value="'+esc(F.em)+'" placeholder="jane@example.com">'
+ +(LOCS.length?'<label for="fl">Preferred location <span class="rq">*</span></label><select id="fl" data-f="loc">'+opts(LOCS,F.loc,"Select a location")+'</select>':"")
+ +'<label for="fx">Special requests or notes (optional)</label><textarea id="fx" data-f="nt" rows="3" placeholder="Anything we should know about?">'+esc(F.nt)+'</textarea></div>'
+ +'<div id="st3"></div>'+nav(true,"next","Continue",!ok3());return h}
+function line(k,v){return'<div class="kv"><small class="mut">'+k+'</small><b>'+v+'</b></div>'}
+function step4(){var T=totals();
+ var rows=F.items.map(function(i){var s=svOf(i.n);return'<div class="ln2"><div><b>'+esc(i.n)+'</b><br><small class="mut">'+dur(s.hours)+(i.q>1?" · "+i.q+" people":"")+'</small></div><b>'+R.money(s.price*i.q)+'</b></div>'}).join("");
+ var terms=C.termsUrl?'<a href="'+esc(C.termsUrl)+'" target="_blank" rel="noopener">Terms &amp; Conditions</a>':"",priv=C.privacyUrl?'<a href="'+esc(C.privacyUrl)+'" target="_blank" rel="noopener">Privacy Policy</a>':"";
+ return'<h2 style="margin-top:4px">Booking summary</h2>'
+ +'<div class="sh">Your details</div><div class="box">'+line("Name",esc(F.fn))+line("Phone",esc(F.ph))+(F.em?line("Email",esc(F.em)):"")+(F.loc?line("Location",esc(F.loc)):"")+(F.nt?line("Notes",esc(F.nt)):"")+'</div>'
+ +'<div class="sh">Appointment</div><div class="box">'+line("Day",R.nice(F.d))+line("Time",R.ft(F.t))+line("Duration estimate",dur(T.h))+'</div>'
+ +'<div class="sh">Treatments</div><div class="box" style="padding:0;overflow:hidden">'+rows+'<div class="ln2" style="background:var(--card)"><b>Total</b><b>'+R.money(T.p)+'</b></div></div>'
+ +'<div class="sh">Payment</div><div class="box">'+esc(C.payNote||"Payment is collected at the spa during your visit.")+'</div>'
+ +(terms||priv?'<p class="fine">By submitting this booking request, you agree to our '+[priv,terms].filter(Boolean).join(" and ")+'.</p>':"")
+ +'<div class="note"><b>Important:</b> This is a booking request only. '+esc(C.name)+' will contact you to confirm. Please wait for that confirmation before you come, as your day and time depend on availability.</div>'
+ +nav(true,"submit","Complete booking",busy)}
+function step5(){return'<div class="done5"><div class="hd5"><span>✓</span><b>Booking request sent</b></div><p>Thank you, '+esc(F.fn.split(" ")[0])+'.</p>'
+ +'<div class="note" style="text-align:left"><b>Important:</b> '+esc(C.name)+' will contact you to confirm your appointment.</div>'
+ +'<div class="refb"><small class="mut">Your booking reference</small><b>'+esc(F.ref)+'</b></div>'
+ +'<p class="fine">Keep this reference. You can change the time or cancel any time in My bookings, using your phone number.</p>'
+ +'<div class="acts"><a class="b g" target="_blank" rel="noopener" href="'+R.wa(C.whatsapp,F.wa)+'">Message us on WhatsApp</a><button class="b" data-cv="mine">My bookings</button><button class="b p" data-a="again">Book another</button></div></div>'}
 function draw(){
  $("cb").hidden=cv!="book";$("cm").hidden=cv!="mine";$("tb").className=cv=="book"?"on":"";$("tm").className=cv=="mine"?"on":"";
- $("svcs").innerHTML=SV.map(function(x,i){return'<button class="svc '+(sel.s===i?"on":"")+'" data-a="psvc" data-v="'+i+'"><b>'+R.esc(x.name)+'</b><span>'+x.hours+' hr · '+R.money(x.price)+'</span></button>'}).join("");
- $("days").innerHTML=R.chDay(sel.d,"pday");
- $("times").innerHTML=!sel.d?'<p class="mut" style="margin:0">Pick a day to see open times.</p>':R.chTime(sel.d,sel.t,"ptime",taken,"");
- $("sum").textContent=sel.s>=0&&sel.d&&sel.t?SV[sel.s].name+" · "+R.nice(sel.d)+" at "+R.ft(sel.t)+" · "+R.money(SV[sel.s].price):"Your booking summary appears here.";
+ if(cv=="book"){
+  $("stp").innerHTML=[1,2,3,4,5].map(function(n){var c=n<F.step?"done":n==F.step?"cur":"";return(n>1?'<span class="ln'+(n<=F.step?" done":"")+'"></span>':"")+'<span class="dot '+c+'"'+(c=="done"&&F.step<5?' data-a="goto" data-v="'+n+'" role="button" aria-label="Back to step '+n+'"':"")+'>'+(c=="done"?"✓":n)+'</span>'}).join("");
+  $("bkb").innerHTML=[step1,step1,step2,step3,step4,step5][F.step]();
+  refresh()}
  var ctx={rs:rs,taken:taken};
  $("mine").innerHTML=!sph?"":R.norm(sph).length<9?'<p class="mut">Enter a valid phone number.</p>':mine.length?mine.map(function(b){return R.card(b,"c",ctx)}).join(""):'<p class="mut">No bookings found for this number.</p>'}
+function refresh(){var n=$("nx");if(n&&F.step<4)n.disabled=!okN();
+ var s=$("st3");if(s)s.innerHTML=ok3()?'<div class="ok">✓ All required information has been provided. You can continue.</div>':'<div class="bad">Please fill in all required fields marked with *.</div>'}
+function go(n){F.step=n;save();draw();var e=$("stp");if(e&&e.scrollIntoView)e.scrollIntoView({block:"start",behavior:"smooth"})}
 async function run(f){try{await f()}catch(e){alert(e.message)}}
-$("cv").addEventListener("click",function(e){
- var t=e.target.closest("[data-a],[data-cv]");if(!t)return;var d=t.dataset;
+async function submit(){if(busy)return;busy=true;var b=$("nx");if(b){b.disabled=true;b.textContent="Sending…"}
+ try{var T=totals(),svcText=F.items.map(function(i){return i.n+(i.q>1?" x"+i.q:"")}).join(", ").slice(0,400);
+  var note=[F.loc?"Location: "+F.loc:"",F.em?"Email: "+F.em:"",F.nt.trim()].filter(Boolean).join(" | ").slice(0,480);
+  var id=await A.create({name:F.fn.trim(),phone:F.ph.trim(),service:svcText,price:T.p,items:F.items.map(function(i){return{name:i.n,qty:i.q}}),day:F.d,time:F.t,note:note});
+  F.ref="RB-"+String(id).replace(/[^a-z0-9]/gi,"").slice(0,7).toUpperCase();
+  F.wa="Hi, I just requested "+svcText+" on "+R.nice(F.d)+" at "+R.ft(F.t)+". Name: "+F.fn.trim()+". Ref "+F.ref;
+  sph=F.ph;$("mp").value=F.ph;F.step=5;save();await loadMine();await loadTaken()}
+ catch(e){alert(e.message);await loadTaken();if(!(F.d&&F.t&&!slotOff(F.d,F.t))){F.t="";F.step=2}}
+ busy=false;draw();var e=$("stp");if(e&&e.scrollIntoView)e.scrollIntoView({block:"start"})}
+/* ---- events ---- */
+document.addEventListener("click",function(e){
+ var t=e.target.closest("[data-a],[data-cv]");if(!t||t.disabled)return;var d=t.dataset;
  if(d.cv){cv=d.cv;rs=null;draw();return}
  var a=d.a,b=mine.filter(function(x){return x.id==d.i})[0];
- if(a=="psvc")sel.s=+d.v;
- else if(a=="pday"){sel.d=d.v;sel.t=""}
- else if(a=="ptime")sel.t=d.v;
- else if(a=="resch")rs={id:b.id,d:b.day,t:b.time};
+ if(a=="add"){if(!F.svc)return;F.items.push({n:F.svc,q:1});F.svc="";save();draw();return}
+ if(a=="rm"){F.items.splice(+d.v,1);save();draw();return}
+ if(a=="next"){if(okN())go(F.step+1);return}
+ if(a=="prev"){go(F.step-1);return}
+ if(a=="goto"){go(+d.v);return}
+ if(a=="submit"){submit();return}
+ if(a=="again"){var o=F;F=blank();F.fn=o.fn;F.ph=o.ph;F.em=o.em;save();draw();return}
+ if(a=="day"){F.d=d.v;F.t="";F.mo=d.v.slice(0,7);save();draw();return}
+ if(a=="mo"){var mo=F.mo||(F.d?F.d.slice(0,7):R.iso(0).slice(0,7)),y=+mo.slice(0,4),m=+mo.slice(5)-1+ +d.v,x=new Date(y,m,1);F.mo=x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0");draw();return}
+ if(a=="tm"){F.t=d.v;save();draw();return}
+ if(a=="resch")rs={id:b.id,d:b.day,t:b.time};
  else if(a=="rday"){rs.d=d.v;rs.t=""}
  else if(a=="rtime")rs.t=d.v;
  else if(a=="rclose")rs=null;
  else if(a=="rsave"){if(!rs.t){alert("Please pick a new time.");return}run(async function(){await A.change(b.id,sph,"reschedule",rs.d,rs.t);rs=null;await loadMine();await loadTaken();draw()});return}
  else if(a=="cancelled"){if(!confirm("Cancel this booking?"))return;run(async function(){await A.change(b.id,sph,"cancel");await loadMine();await loadTaken();draw()});return}
  draw()});
-$("cgo").onclick=function(){run(async function(){
- var n=$("cn").value.trim(),p=$("cp").value.trim();
- if(sel.s<0||!sel.d||!sel.t){alert("Please choose a service, day and time.");return}
- if(!n||R.norm(p).length<9){alert("Please enter your name and a valid phone number.");return}
- var s=SV[sel.s];
- await A.create({name:n,phone:p,service:s.name,price:s.price,day:sel.d,time:sel.t,note:$("cx").value.trim()});
- var m="Hi, I just requested "+s.name+" on "+R.nice(sel.d)+" at "+R.ft(sel.t)+". Name: "+n;
- $("cdone").hidden=false;
- $("cdone").innerHTML='<b>Request received ✓</b><p class="mut">Status: Waiting. '+R.esc(C.name)+' will confirm your booking.</p><div class="acts"><a class="b g" target="_blank" rel="noopener" href="'+R.wa(C.whatsapp,m)+'">Message us on WhatsApp</a><button class="b" data-cv="mine">My bookings</button></div>';
- sph=p;$("mp").value=p;sel={s:-1,d:"",t:""};$("cn").value="";$("cp").value="";$("cx").value="";
- await loadMine();await loadTaken();draw()})};
+document.addEventListener("change",function(e){var f=e.target.dataset&&e.target.dataset.f;if(!f)return;var v=e.target.value;
+ if(f=="cat"){F.cat=v;F.typ="";F.svc=""}else if(f=="typ"){F.typ=v;F.svc=""}else if(f=="svc")F.svc=v;
+ else if(f=="q"){F.items[+e.target.dataset.i].q=+v}
+ else{F[f]=v;save();refresh();return}
+ save();draw()});
+document.addEventListener("input",function(e){var f=e.target.dataset&&e.target.dataset.f;if(!f||["fn","ph","em","nt"].indexOf(f)<0)return;F[f]=e.target.value;save();refresh()});
 $("mgo").onclick=function(){run(async function(){sph=$("mp").value;await loadMine();draw()})};
-window.clientInit=async function(){await loadSv();await loadTaken();await loadMine();draw()};
+var inited=false;
+window.clientInit=async function(){await loadSv();await loadTaken();await loadMine();if(!inited){restore();inited=true}draw()};
 })();</script>
 <script>(function(){
 var R=RB,C=R.C,$=R.$,A=R.API;
@@ -185,7 +273,8 @@ function draw(){
  var shown=q?cs.filter(function(c){return(c.name+" "+c.phone).toLowerCase().indexOf(q)>-1||(qd&&R.norm(c.phone).indexOf(qd)>-1)}):cs;
  $("clients").innerHTML=shown.length?shown.map(clientCard).join(""):'<div class="card mut">'+(cs.length?"No clients match.":"No clients yet. They appear after their first booking.")+'</div>';
  $("n-td").textContent=tb.length||"";$("n-rm").textContent=due.length||"";$("n-ob").textContent=pend.length||"";$("n-cl").textContent=cs.length||"";
- $("sv").innerHTML=ALLSV.map(function(x,i){return'<div class="srow" '+(i?"":'style="border-top:0"')+'><span>'+R.esc(x.name)+(x.price>0?"":' <small>(hidden)</small>')+'</span><span class="mut">'+x.hours+' hr</span><input type="number" min="0" inputmode="numeric" value="'+x.price+'" data-sp="'+x.id+'" aria-label="Price for '+R.esc(x.name)+'"><button class="b" data-a="svdel" data-i="'+x.id+'">Remove</button></div>'}).join("");
+ $("sv").innerHTML=ALLSV.map(function(x,i){return'<div class="srow" '+(i?"":'style="border-top:0"')+'><span>'+R.esc(x.name)+(x.price>0?"":' <small>(hidden)</small>')+((x.category||x.type)?'<br><small>'+R.esc([x.category,x.type].filter(Boolean).join(' › '))+'</small>':'')+'</span><span class="mut">'+x.hours+' hr</span><input type="number" min="0" inputmode="numeric" value="'+x.price+'" data-sp="'+x.id+'" aria-label="Price for '+R.esc(x.name)+'"><button class="b" data-a="svdel" data-i="'+x.id+'">Remove</button></div>'}).join("");
+ $("xcl").innerHTML=ALLSV.map(function(x){return x.category}).filter(function(v,i,a){return v&&a.indexOf(v)==i}).map(function(v){return"<option value=\""+R.esc(v)+"\">"}).join("");
  $("ws").innerHTML=SV.map(function(x,i){return'<option value="'+i+'">'+R.esc(x.name)+' – '+R.money(x.price)+'</option>'}).join("");
  $("wd").innerHTML=[0,1,2,3,4,5,6].map(function(i){return'<option value="'+R.iso(i)+'">'+R.nice(R.iso(i))+'</option>'}).join("");
  $("wt").innerHTML=C.openTimes.map(function(t){return'<option value="'+t+'">'+R.ft(t)+'</option>'}).join("")}
@@ -208,7 +297,7 @@ $("ow").addEventListener("change",function(e){var id=e.target.dataset.sp;if(id==
 $("xsv").onclick=function(){run(async function(){var n=$("xn").value.trim(),h=+$("xh").value||1,pv=$("xp").value,p=Math.round(+pv);
  if(!n||pv===""||!(p>=0)){alert("Enter a service name and a price.");return}
  if(!(h>0&&h<=12)){alert("Hours must be between 0.5 and 12.");return}
- await A.addService({name:n,hours:h,price:p,position:ALLSV.length});$("xn").value="";$("xh").value="";$("xp").value="";await load()})};
+ await A.addService({name:n,hours:h,price:p,position:ALLSV.length,category:$("xc").value.trim(),type:$("xt").value.trim()});$("xn").value="";$("xc").value="";$("xt").value="";$("xh").value="";$("xp").value="";await load()})};
 $("cq").oninput=function(){cq=this.value;draw()};
 $("menu").onclick=function(){var o=$("side").classList.toggle("open");$("scrim").classList.toggle("on",o)};
 $("scrim").onclick=closeMenu;
