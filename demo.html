@@ -44,6 +44,7 @@
 <button class="nl" data-ov="rm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>Reminders<span class="n" id="n-rm"></span></button>
 <button class="nl" data-ov="ob"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Bookings<span class="n" id="n-ob"></span></button>
 <button class="nl" data-ov="cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .7 3.5 2.6 3.5 5.8"/></svg>Clients<span class="n" id="n-cl"></span></button>
+<button class="nl" data-ov="rp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Reports</button>
 <button class="nl" data-ov="os"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></svg>Services</button>
 <div class="gap"></div>
 <button class="nl" data-theme-btn><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>Dark / light</button>
@@ -66,13 +67,19 @@
 
 <section id="ov">
 <div class="stats"><div class="card hi"><b id="k1"></b><span>Appointments today</span></div><div class="card"><b id="k2"></b><span>Waiting for you to confirm</span></div><div class="card"><b id="k3"></b><span>Earned today</span></div><div class="card"><b id="k4"></b><span>Booked, next 7 days</span></div></div>
-<h2>Next 7 days</h2><div class="card"><div class="chart" id="chart"></div></div>
-<h2>Waiting for you to confirm</h2><div id="pend"></div>
+<div class="ovg">
+<div><h2>Next 7 days</h2><div class="card"><div class="chart" id="chart"></div></div>
+<h2>Today</h2><div class="card mini" id="ovtoday"></div></div>
+<div><h2>Waiting for you to confirm</h2><div id="pend"></div></div>
+</div>
 </section>
-<section id="td" hidden><div id="today"></div></section>
-<section id="rm" hidden><p class="sub" id="remh"></p><div id="rem"></div></section>
-<section id="ob" hidden><div class="chips" id="flt" style="margin-bottom:12px"></div><div id="all"></div></section>
-<section id="cl" hidden><div class="srch"><label for="cq" style="margin-top:0">Search clients</label><input id="cq" type="search" placeholder="Name or phone"></div><div id="clients"></div></section>
+<section id="td" hidden><div id="today" class="g2"></div></section>
+<section id="rm" hidden><p class="sub" id="remh"></p><div id="rem" class="g2"></div></section>
+<section id="ob" hidden>
+<div class="tools"><input id="bq" type="search" placeholder="Search name, phone or treatment" aria-label="Search bookings"><select id="bd" aria-label="Dates"><option value="all">All dates</option><option value="up">Upcoming</option><option value="week">Next 7 days</option><option value="past">Past</option></select></div>
+<div class="chips" id="flt" style="margin-bottom:12px"></div><div id="all"></div></section>
+<section id="cl" hidden><div class="srch"><label for="cq" style="margin-top:0">Search clients</label><input id="cq" type="search" placeholder="Name or phone"></div><div id="clients" class="g2"></div></section>
+<section id="rp" hidden><div class="pchips" id="pch"></div><div id="rpt"></div></section>
 <section id="os" hidden><p class="sub">Changes here update your booking page. Set a price to 0 to hide a service.</p><div class="card" id="sv"></div>
 <h2>Add a service</h2><div class="card"><label for="xn">Service name</label><input id="xn"><label for="xc">Category (optional)</label><input id="xc" placeholder="e.g. Face, Body, Hair" list="xcl"><datalist id="xcl"></datalist><label for="xt">Type (optional)</label><input id="xt" placeholder="e.g. Facials, Massage"><label for="xh">Hours it takes</label><input id="xh" type="number" min="0.5" max="12" step="0.5" inputmode="decimal" placeholder="1"><label for="xp">Price</label><input id="xp" type="number" min="0" inputmode="numeric"><button class="cta" id="xsv">Add service</button></div></section>
 </div>
@@ -231,8 +238,10 @@ window.clientInit=async function(){await loadSv();await loadTaken();await loadMi
 })();</script>
 <script>(function(){
 var R=RB,C=R.C,$=R.$,A=R.API;
-var list=[],ALLSV=[],SV=[],ov="ov",rs=null,flt="all",cq="";
-var SEC=["ov","td","rm","ob","cl","os"],TT={ov:"Overview",td:"Today",rm:"Reminders",ob:"Bookings",cl:"Clients",os:"Services"};
+var list=[],ALLSV=[],SV=[],ov="ov",rs=null,flt="all",cq="",bq="",bd="all",rp="week";
+var WIDE=window.matchMedia("(min-width:1100px)");
+var SEC=["ov","td","rm","ob","cl","rp","os"],TT={ov:"Overview",td:"Today",rm:"Reminders",ob:"Bookings",cl:"Clients",rp:"Reports",os:"Services"};
+var PL={week:"Last 7 days",month:"Last 30 days",this:"This month",last:"Last month"};
 var FL={all:"All",pending:"Waiting",confirmed:"Confirmed",done:"Done",closed:"Cancelled"};
 document.querySelectorAll(".nm").forEach(function(n){n.textContent=C.name});
 function taken(d,t,x){return list.some(function(b){return b.day==d&&b.time==t&&R.ACTIVE.indexOf(b.status)>-1&&b.id!=x})}
@@ -247,7 +256,69 @@ function clientsOf(){var m={},today=R.iso(0);
  return Object.keys(m).map(function(k){return m[k]}).sort(function(x,y){return y.spent-x.spent||(x.name<y.name?-1:1)})}
 function clientCard(c){
  var bits=[c.visits+(c.visits==1?" visit":" visits")];if(c.last)bits.push("last "+R.nice(c.last));if(c.next)bits.push("next "+R.nice(c.next.day)+" "+R.ft(c.next.time));
- return'<div class="card"><div class="row"><div><b>'+R.esc(c.name)+'</b><br><span class="mut">'+R.esc(c.phone)+'</span></div><div class="t">'+R.money(c.spent)+'</div></div><p class="mut" style="margin:8px 0 0">'+bits.join(" · ")+'</p><div class="acts"><a class="b" href="tel:+254'+R.norm(c.phone)+'">Call</a><a class="b g" target="_blank" rel="noopener" href="'+R.wa(c.phone,"Hi "+c.name+", this is "+C.name+".")+'">WhatsApp</a></div></div>'}
+ return'<div class="card"><div class="row"><div class="who"><span class="av">'+R.esc(R.ini(c.name))+'</span><div><b>'+R.esc(c.name)+'</b><br><span class="mut">'+R.esc(c.phone)+'</span></div></div><div class="t">'+R.money(c.spent)+'</div></div><p class="mut" style="margin:8px 0 0">'+bits.join(" · ")+'</p><div class="acts"><a class="b" href="tel:+254'+R.norm(c.phone)+'">Call</a><a class="b g" target="_blank" rel="noopener" href="'+R.wa(c.phone,"Hi "+c.name+", this is "+C.name+".")+'">WhatsApp</a></div></div>'}
+function live(b){return R.OFF.indexOf(b.status)<0}
+function sumP(a){return a.reduce(function(s,b){return s+b.price},0)}
+function gl(d){return d==R.iso(0)?"Today · "+R.nice(d):d==R.iso(1)?"Tomorrow · "+R.nice(d):R.nice(d)}
+function gs(rows){var l=rows.filter(live);return l.length+(l.length==1?" booking":" bookings")+" · "+R.money(sumP(l))}
+function rsPanel(b){return'<div class="rs"><h3>New day</h3><div class="chips">'+R.chDay(rs.d,"rday")+'</div><h3>New time</h3><div class="chips">'+R.chTime(rs.d,rs.t,"rtime",taken,b.id)+'</div><div class="acts"><button class="b p" data-a="rsave" data-i="'+b.id+'">Save new time</button><button class="b" data-a="rclose">Close</button></div></div>'}
+function trow(b){
+ var liveA=R.ACTIVE.indexOf(b.status)>-1,when=R.nice(b.day)+" · "+R.ft(b.time),id=' data-i="'+b.id+'"',m="";
+ var main=b.status=="pending"?["confirmed","Confirm"]:b.status=="confirmed"?["chair","Start"]:b.status=="chair"?["done","Mark done"]:null;
+ if(b.status=="confirmed")m+='<a data-a="remind"'+id+' target="_blank" rel="noopener" href="'+R.wa(b.phone,"Hi "+b.name+", a reminder of your "+b.service+" appointment on "+when+" at "+C.name+". Reply here if you need to change it.")+'">Send reminder</a>';
+ m+='<a href="tel:+254'+R.norm(b.phone)+'">Call</a><a target="_blank" rel="noopener" href="'+R.wa(b.phone,"Hi "+b.name+", your "+b.service+" booking on "+when+" is "+R.LBL[b.status].toLowerCase()+".")+'">WhatsApp</a>';
+ if(liveA&&b.status!="chair")m+='<button data-a="resch"'+id+'>Reschedule</button>';
+ if(b.status=="confirmed")m+='<button data-a="noshow"'+id+'>No-show</button>';
+ if(liveA&&b.status!="chair")m+='<button class="dn" data-a="cancelled"'+id+'>Cancel</button>';
+ var tags=[R.esc(b.phone)];if(b.rescheduled)tags.push("Rescheduled");if(b.reminded)tags.push("Reminded ✓");
+ var h='<tr><td class="tmc">'+R.ft(b.time)+'</td><td><div class="who" style="align-items:center"><span class="av">'+R.esc(R.ini(b.name))+'</span><div><b>'+R.esc(b.name)+'</b><br><small class="mut">'+tags.join(" · ")+'</small></div></div></td><td>'+R.esc(b.service)+'</td><td><span class="st '+b.status+'">'+R.LBL[b.status]+'</span></td><td class="r">'+R.money(b.price)+'</td><td class="acc">'+(main?'<button class="b p sm" data-a="'+main[0]+'"'+id+'>'+main[1]+'</button>':"")+'<details class="mn"><summary aria-label="More actions">⋯</summary><div class="mp">'+m+'</div></details></td></tr>';
+ if(rs&&rs.id==b.id)h+='<tr class="rsr"><td colspan="6">'+rsPanel(b)+'</td></tr>';
+ return h}
+function bookingsHtml(){
+ var today=R.iso(0),t7=R.iso(6),q=bq.trim().toLowerCase(),qd=q.replace(/\D/g,"");
+ var base=list.filter(function(b){
+  if(bd=="up"&&b.day<today)return false;if(bd=="week"&&(b.day<today||b.day>t7))return false;if(bd=="past"&&b.day>=today)return false;
+  if(!q)return true;return(b.name+" "+b.phone+" "+b.service).toLowerCase().indexOf(q)>-1||(qd.length>2&&R.norm(b.phone).indexOf(qd)>-1)});
+ $("flt").innerHTML=Object.keys(FL).map(function(k){return'<button class="chip '+(k==flt?"on":"")+'" data-f="'+k+'">'+FL[k]+' ('+base.filter(function(b){return fm(b,k)}).length+')</button>'}).join("");
+ var fb=base.filter(function(b){return fm(b,flt)});
+ if(!fb.length)return'<div class="card mut">No bookings here.</div>';
+ var by={};fb.forEach(function(b){(by[b.day]=by[b.day]||[]).push(b)});
+ var ds=Object.keys(by),up=ds.filter(function(d){return d>=today}).sort(),pa=ds.filter(function(d){return d<today}).sort().reverse(),all=up.concat(pa);
+ var h="",ctx={rs:rs,taken:taken},wide=WIDE.matches;
+ if(wide)h='<table class="tbl"><thead><tr><th>Time</th><th>Client</th><th>Treatment</th><th>Status</th><th class="r">Price</th><th></th></tr></thead><tbody>';
+ all.forEach(function(d,i){var rows=R.srt(by[d]);
+  if(up.length&&i==up.length)h+=wide?'<tr class="dv"><td colspan="6">Earlier</td></tr>':'<div class="gh2"><span>EARLIER</span></div>';
+  if(wide)h+='<tr class="gh"><td colspan="6"><b>'+gl(d)+'</b><span>'+gs(rows)+'</span></td></tr>'+rows.map(trow).join("");
+  else h+='<div class="gh2"><b>'+gl(d)+'</b><span>'+gs(rows)+'</span></div>'+rows.map(function(b){return R.card(b,"o",ctx)}).join("")});
+ return h+(wide?"</tbody></table>":"")}
+function hb(rows,fmtv){var mx=Math.max.apply(null,rows.map(function(r){return r.v}).concat([1]));
+ return rows.length?rows.map(function(r){return'<div class="hb"><span title="'+R.esc(r.l)+'">'+R.esc(r.l)+'</span><i><u style="width:'+Math.max(2,Math.round(r.v/mx*100))+'%"></u></i><b>'+(fmtv?fmtv(r):r.v)+'</b></div>'}).join(""):'<p class="mut" style="margin:6px 0">Nothing yet.</p>'}
+function isoD(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function range(){var t=new Date(),y=t.getFullYear(),m=t.getMonth();
+ if(rp=="week")return{a:R.iso(-6),b:R.iso(0),pa:R.iso(-13),pb:R.iso(-7)};
+ if(rp=="month")return{a:R.iso(-29),b:R.iso(0),pa:R.iso(-59),pb:R.iso(-30)};
+ if(rp=="this")return{a:isoD(new Date(y,m,1)),b:isoD(new Date(y,m+1,0)),pa:isoD(new Date(y,m-1,1)),pb:isoD(new Date(y,m,0))};
+ return{a:isoD(new Date(y,m-1,1)),b:isoD(new Date(y,m,0)),pa:isoD(new Date(y,m-2,1)),pb:isoD(new Date(y,m-1,0))}}
+function inR(a,b){return list.filter(function(x){return x.day>=a&&x.day<=b})}
+function earned(a){return sumP(a.filter(function(b){return b.status=="done"}))}
+var DN=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+function reports(){
+ $("pch").innerHTML=Object.keys(PL).map(function(k){return'<button class="chip '+(k==rp?"on":"")+'" data-p="'+k+'">'+PL[k]+'</button>'}).join("");
+ var r=range(),pb=inR(r.a,r.b),lv=pb.filter(live),done=pb.filter(function(b){return b.status=="done"}),ns=pb.filter(function(b){return b.status=="noshow"}).length,cx=pb.filter(function(b){return b.status=="cancelled"}).length;
+ var E=earned(pb),PE=earned(inR(r.pa,r.pb)),todo=sumP(lv.filter(function(b){return b.status!="done"}));
+ var dl=PE?(E>=PE?'<small class="dl up">▲ ':'<small class="dl dn">▼ ')+Math.abs(Math.round((E-PE)/PE*100))+'% vs previous period</small>':(E?'<small class="dl up">New this period</small>':'<small class="dl">No earnings yet</small>');
+ var k=function(v,l,x){return'<div class="card"><b>'+v+'</b><span>'+l+'</span>'+(x||"")+'</div>'};
+ var h='<div class="kpis">'+k(R.money(E),"Earned (marked done)",dl)+k(R.money(todo),"Booked, not done yet")+k(lv.length,"Bookings")+k(done.length?R.money(Math.round(E/done.length)):"–","Average booking")+k(done.length+ns?Math.round(ns/(done.length+ns)*100)+"%":"–","No-show rate",ns?'<small class="dl">'+ns+(ns==1?" no-show":" no-shows")+'</small>':"")+k(cx,"Cancelled")+'</div>';
+ var days=[],c=new Date(r.a+"T00:00"),end=new Date(r.b+"T00:00");while(c<=end){days.push(isoD(c));c.setDate(c.getDate()+1)}
+ var tot=days.map(function(d){return sumP(lv.filter(function(b){return b.day==d}))}),dn=days.map(function(d){return sumP(done.filter(function(b){return b.day==d}))}),mx=Math.max.apply(null,tot.concat([1])),step=Math.ceil(days.length/10);
+ h+='<div class="card" style="margin-bottom:12px"><h3 class="ct">'+PL[rp]+'</h3><div class="lg"><span><i style="background:var(--lilac)"></i>Earned</span><span><i style="background:color-mix(in srgb,var(--gold) 45%,transparent)"></i>Booked, not done yet</span></div><div class="cht">'+days.map(function(d,i){var H=tot[i]?Math.max(4,Math.round(tot[i]/mx*110)):2;return'<div title="'+R.nice(d)+' · '+R.money(tot[i])+'"><i class="bo" style="height:'+H+'px"><u style="height:'+(tot[i]?Math.round(dn[i]/tot[i]*100):0)+'%"></u></i><span>'+(days.length<=7?new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short"}):(i%step==0?+d.slice(8):""))+'</span></div>'}).join("")+'</div></div>';
+ var sv={};lv.forEach(function(b){var parts=String(b.service).split(", ");parts.forEach(function(p){var m=p.match(/^(.*?)(?: x(\d+))?$/),n=m[1],q=+m[2]||1,s=sv[n]||(sv[n]={l:n,v:0,rev:0}),f=ALLSV.filter(function(x){return x.name==n})[0];s.v+=q;s.rev+=parts.length==1?b.price:(f?f.price*q:0)})});
+ var top=Object.keys(sv).map(function(n){return sv[n]}).sort(function(a,b){return b.v-a.v||b.rev-a.rev}).slice(0,6);
+ var wd=[1,2,3,4,5,6,0].map(function(n){return{l:DN[n],v:lv.filter(function(b){return new Date(b.day+"T00:00").getDay()==n}).length,n:n}}).filter(function(x){return C.closedDays.indexOf(x.n)<0||x.v});
+ var tm=C.openTimes.map(function(t){return{l:R.ft(t),v:lv.filter(function(b){return b.time==t}).length}});
+ h+='<div class="rg"><div class="card"><h3 class="ct">Top treatments</h3>'+hb(top,function(x){return x.v+(x.rev?" · "+R.money(x.rev):"")})+'</div><div class="card"><h3 class="ct">Busiest days</h3>'+hb(wd)+'</div><div class="card full"><h3 class="ct">Busiest times</h3>'+hb(tm)+'</div></div>';
+ if(!pb.length)h='<div class="card mut">No bookings in this period yet.</div>';
+ $("rpt").innerHTML=h}
 function draw(){
  SEC.forEach(function(s){$(s).hidden=s!=ov});
  document.querySelectorAll(".side [data-ov]").forEach(function(b){b.className="nl"+(b.dataset.ov==ov?" on":"");b.setAttribute("aria-current",b.dataset.ov==ov?"page":"false")});
@@ -260,18 +331,18 @@ function draw(){
  $("k3").textContent=R.money(list.filter(function(b){return b.day==today&&b.status=="done"}).reduce(function(s,b){return s+b.price},0));
  $("k4").textContent=R.money(list.filter(function(b){return days.indexOf(b.day)>-1&&live(b)}).reduce(function(s,b){return s+b.price},0));
  $("chart").innerHTML=days.map(function(d,i){var n=list.filter(function(b){return b.day==d&&live(b)}).length;return'<div class="'+(i?"":"now")+'"><em>'+n+'</em><i style="height:'+(n?14+n*14:3)+'px"></i>'+new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short"})+'</div>'}).join("");
- $("pend").innerHTML=pend.length?pend.map(card).join(""):'<div class="card mut">Nothing waiting. New requests appear here.</div>';
+ $("pend").innerHTML=pend.length?pend.slice(0,4).map(card).join("")+(pend.length>4?'<p style="margin:0"><button class="b" data-ov="ob" data-f="pending">+'+(pend.length-4)+' more · View all</button></p>':""):'<div class="card mut">Nothing waiting. New requests appear here.</div>';
+ $("ovtoday").innerHTML=tb.length?tb.map(function(b){return'<div class="mr"><span class="tm">'+R.ft(b.time)+'</span><span class="av">'+R.esc(R.ini(b.name))+'</span><span class="mt"><b>'+R.esc(b.name)+'</b><small class="mut">'+R.esc(b.service)+'</small></span><span class="st '+b.status+'">'+R.LBL[b.status]+'</span></div>'}).join(""):'<p class="mut" style="margin:10px 0">No appointments today.</p>';
  $("today").innerHTML=tb.length?tb.map(card).join(""):'<div class="card mut">No appointments today.</div>';
  var nd=R.openDays().filter(function(d){return d>today})[0];
  var due=R.srt(list.filter(function(b){return b.day==nd&&b.status=="confirmed"&&!b.reminded}));
  $("remh").textContent=nd?"Confirmed clients for "+R.nice(nd)+". Tap Send reminder to message them on WhatsApp.":"";
  $("rem").innerHTML=due.length?due.map(card).join(""):'<div class="card mut">No reminders due. Confirmed clients for your next open day appear here.</div>';
- $("flt").innerHTML=Object.keys(FL).map(function(k){return'<button class="chip '+(k==flt?"on":"")+'" data-f="'+k+'">'+FL[k]+' ('+list.filter(function(b){return fm(b,k)}).length+')</button>'}).join("");
- var fb=R.srt(list.filter(function(b){return fm(b,flt)}));
- $("all").innerHTML=fb.length?fb.map(card).join(""):'<div class="card mut">No bookings here.</div>';
+ $("all").innerHTML=bookingsHtml();
  var cs=clientsOf(),q=cq.trim().toLowerCase(),qd=q.replace(/\D/g,"");
  var shown=q?cs.filter(function(c){return(c.name+" "+c.phone).toLowerCase().indexOf(q)>-1||(qd&&R.norm(c.phone).indexOf(qd)>-1)}):cs;
  $("clients").innerHTML=shown.length?shown.map(clientCard).join(""):'<div class="card mut">'+(cs.length?"No clients match.":"No clients yet. They appear after their first booking.")+'</div>';
+ reports();
  $("n-td").textContent=tb.length||"";$("n-rm").textContent=due.length||"";$("n-ob").textContent=pend.length||"";$("n-cl").textContent=cs.length||"";
  $("sv").innerHTML=ALLSV.map(function(x,i){return'<div class="srow" '+(i?"":'style="border-top:0"')+'><span>'+R.esc(x.name)+(x.price>0?"":' <small>(hidden)</small>')+((x.category||x.type)?'<br><small>'+R.esc([x.category,x.type].filter(Boolean).join(' › '))+'</small>':'')+'</span><span class="mut">'+x.hours+' hr</span><input type="number" min="0" inputmode="numeric" value="'+x.price+'" data-sp="'+x.id+'" aria-label="Price for '+R.esc(x.name)+'"><button class="b" data-a="svdel" data-i="'+x.id+'">Remove</button></div>'}).join("");
  $("xcl").innerHTML=ALLSV.map(function(x){return x.category}).filter(function(v,i,a){return v&&a.indexOf(v)==i}).map(function(v){return"<option value=\""+R.esc(v)+"\">"}).join("");
@@ -280,8 +351,10 @@ function draw(){
  $("wt").innerHTML=C.openTimes.map(function(t){return'<option value="'+t+'">'+R.ft(t)+'</option>'}).join("")}
 function closeMenu(){$("side").classList.remove("open");$("scrim").classList.remove("on")}
 $("ow").addEventListener("click",function(e){
- var t=e.target.closest("[data-a],[data-ov],[data-f]");if(!t)return;var d=t.dataset;
- if(d.ov){ov=d.ov;rs=null;closeMenu();draw();window.scrollTo(0,0);return}
+ document.querySelectorAll(".mn[open]").forEach(function(m){if(!m.contains(e.target))m.open=false});
+ var t=e.target.closest("[data-a],[data-ov],[data-f],[data-p]");if(!t)return;var d=t.dataset;
+ if(d.p){rp=d.p;draw();return}
+ if(d.ov){ov=d.ov;if(d.f)flt=d.f;rs=null;closeMenu();draw();window.scrollTo(0,0);return}
  if(d.f){flt=d.f;draw();return}
  var a=d.a,b=list.filter(function(x){return x.id==d.i})[0];
  if(a=="resch")rs={id:b.id,d:b.day,t:b.time};
@@ -299,6 +372,9 @@ $("xsv").onclick=function(){run(async function(){var n=$("xn").value.trim(),h=+$
  if(!(h>0&&h<=12)){alert("Hours must be between 0.5 and 12.");return}
  await A.addService({name:n,hours:h,price:p,position:ALLSV.length,category:$("xc").value.trim(),type:$("xt").value.trim()});$("xn").value="";$("xc").value="";$("xt").value="";$("xh").value="";$("xp").value="";await load()})};
 $("cq").oninput=function(){cq=this.value;draw()};
+$("bq").oninput=function(){bq=this.value;draw()};
+$("bd").onchange=function(){bd=this.value;draw()};
+WIDE.addEventListener("change",function(){draw()});
 $("menu").onclick=function(){var o=$("side").classList.toggle("open");$("scrim").classList.toggle("on",o)};
 $("scrim").onclick=closeMenu;
 $("wgo").onclick=function(){$("wf").hidden=!$("wf").hidden;window.scrollTo(0,0)};

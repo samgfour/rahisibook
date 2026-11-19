@@ -4,6 +4,7 @@ var ACTIVE=["pending","confirmed","chair"],OFF=["cancelled","noshow"];
 var LBL={pending:"Waiting",confirmed:"Confirmed",chair:"In the chair",done:"Done",noshow:"No-show",cancelled:"Cancelled"};
 var $=function(i){return document.getElementById(i)};
 function esc(s){var d=document.createElement("div");d.textContent=s==null?"":s;return d.innerHTML}
+function ini(n){return String(n||"?").trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0)}).join("").toUpperCase()||"?"}
 function norm(p){return String(p).replace(/\D/g,"").slice(-9)}
 function iso(n){var d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function nice(d){return new Date(d+"T00:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})}
@@ -19,7 +20,7 @@ function chTime(d,cur,a,taken,x){var n=new Date(),hm=String(n.getHours()).padSta
 /* One booking card. mode "o" = owner, "c" = client. ctx = {rs, taken} */
 function card(b,mode,ctx){
  var o=mode=="o",live=ACTIVE.indexOf(b.status)>-1,when=nice(b.day)+" · "+ft(b.time),id=' data-i="'+b.id+'"';
- var h='<div class="card"><div class="row"><div><b>'+esc(o?b.name:b.service)+'</b><br><span class="mut">'+(o?esc(b.service)+" · "+money(b.price):when+" · "+money(b.price))+'</span>'+(o&&b.day!=iso(0)?'<br><span class="mut">'+nice(b.day)+'</span>':"")+'</div><div><div class="t">'+(o?ft(b.time):"")+'</div><span class="st '+b.status+'">'+LBL[b.status]+'</span></div></div>';
+ var h='<div class="card"><div class="row"><div'+(o?' class="who"':"")+'>'+(o?'<span class="av">'+esc(ini(b.name))+'</span><div>':"")+'<b>'+esc(o?b.name:b.service)+'</b><br><span class="mut">'+(o?esc(b.service)+" · "+money(b.price):when+" · "+money(b.price))+'</span>'+(o&&b.day!=iso(0)?'<br><span class="mut">'+nice(b.day)+'</span>':"")+(o?"</div>":"")+'</div><div><div class="t">'+(o?ft(b.time):"")+'</div><span class="st '+b.status+'">'+LBL[b.status]+'</span></div></div>';
  if(b.rescheduled)h+='<span class="tag">Rescheduled</span>';
  if(b.reminded)h+='<span class="tag">Reminder sent ✓</span>';
  h+='<div class="acts">';
@@ -93,5 +94,5 @@ var TK="rb_theme",root=document.documentElement;
 try{var sv=localStorage.getItem(TK);if((sv=="dark"||sv=="light")&&root.setAttribute)root.setAttribute("data-theme",sv)}catch(e){}
 function isDark(){var t=root.getAttribute("data-theme");return t?t=="dark":!!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)}
 if(document.addEventListener)document.addEventListener("click",function(e){if(!e.target.closest("[data-theme-btn]"))return;var n=isDark()?"light":"dark";root.setAttribute("data-theme",n);try{localStorage.setItem(TK,n)}catch(x){}});
-window.RB={openDays:openDays,C:C,LIVE:LIVE,ACTIVE:ACTIVE,OFF:OFF,LBL:LBL,$:$,esc:esc,norm:norm,iso:iso,nice:nice,ft:ft,money:money,wa:wa,srt:srt,chDay:chDay,chTime:chTime,card:card,API:API};
+window.RB={ini:ini,openDays:openDays,C:C,LIVE:LIVE,ACTIVE:ACTIVE,OFF:OFF,LBL:LBL,$:$,esc:esc,norm:norm,iso:iso,nice:nice,ft:ft,money:money,wa:wa,srt:srt,chDay:chDay,chTime:chTime,card:card,API:API};
 })();
